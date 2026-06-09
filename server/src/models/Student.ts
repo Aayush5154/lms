@@ -10,6 +10,7 @@ export interface IStudent extends Document {
   monthlyFee: number;
   feeDueDate: number;
   feeStatus: "paid" | "unpaid" | "overdue";
+  shifts?: ("morning" | "day" | "full" | "night")[];
   nextDueDate?: string;
   notes?: string;
   isActive: boolean;
@@ -32,6 +33,7 @@ const StudentSchema = new Schema<IStudent>(
     monthlyFee: { type: Number, required: true },
     feeDueDate: { type: Number, required: true, default: 1 },
     feeStatus: { type: String, enum: ["paid", "unpaid", "overdue"], default: "unpaid" },
+    shifts: { type: [String], enum: ["morning", "day", "full", "night"], default: [] },
     nextDueDate: { type: String },
     notes: { type: String },
     isActive: { type: Boolean, default: true },

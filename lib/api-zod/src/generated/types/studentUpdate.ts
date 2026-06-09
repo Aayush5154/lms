@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { StudentUpdateFeeStatus } from './studentUpdateFeeStatus';
+import type { StudentUpdateShiftsItem } from './studentUpdateShiftsItem';
 
 export interface StudentUpdate {
   name?: string;
@@ -16,6 +17,7 @@ export interface StudentUpdate {
   monthlyFee?: number;
   feeDueDate?: number;
   feeStatus?: StudentUpdateFeeStatus;
+  shifts?: StudentUpdateShiftsItem[];
   notes?: string;
   whatsappNumber?: string;
   isActive?: boolean;

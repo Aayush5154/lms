@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { StudentFeeStatus } from './studentFeeStatus';
+import type { StudentShiftsItem } from './studentShiftsItem';
 
 export interface Student {
   id: string;
@@ -19,6 +20,7 @@ export interface Student {
   monthlyFee: number;
   feeDueDate: number;
   feeStatus: StudentFeeStatus;
+  shifts?: StudentShiftsItem[];
   /** @nullable */
   nextDueDate?: string | null;
   /** @nullable */

@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { StudentInputFeeStatus } from './studentInputFeeStatus';
+import type { StudentInputShiftsItem } from './studentInputShiftsItem';
 
 export interface StudentInput {
   name: string;
@@ -16,6 +17,7 @@ export interface StudentInput {
   monthlyFee: number;
   feeDueDate: number;
   feeStatus?: StudentInputFeeStatus;
+  shifts?: StudentInputShiftsItem[];
   notes?: string;
   whatsappNumber?: string;
 }

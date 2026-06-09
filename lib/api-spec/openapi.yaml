@@ -859,6 +859,11 @@ components:
         feeStatus:
           type: string
           enum: [paid, unpaid, overdue]
+        shifts:
+          type: array
+          items:
+            type: string
+            enum: [morning, day, full, night]
         nextDueDate:
           type: ["string", "null"]
         notes:
@@ -891,6 +896,11 @@ components:
         feeStatus:
           type: string
           enum: [paid, unpaid, overdue]
+        shifts:
+          type: array
+          items:
+            type: string
+            enum: [morning, day, full, night]
         notes:
           type: string
         whatsappNumber:
@@ -916,6 +926,11 @@ components:
         feeStatus:
           type: string
           enum: [paid, unpaid, overdue]
+        shifts:
+          type: array
+          items:
+            type: string
+            enum: [morning, day, full, night]
         notes:
           type: string
         whatsappNumber:

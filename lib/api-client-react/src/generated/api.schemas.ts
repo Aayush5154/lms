@@ -129,6 +129,16 @@ export const StudentFeeStatus = {
   overdue: 'overdue',
 } as const;
 
+export type StudentShiftsItem = typeof StudentShiftsItem[keyof typeof StudentShiftsItem];
+
+
+export const StudentShiftsItem = {
+  morning: 'morning',
+  day: 'day',
+  full: 'full',
+  night: 'night',
+} as const;
+
 export interface Student {
   id: string;
   name: string;
@@ -141,6 +151,7 @@ export interface Student {
   monthlyFee: number;
   feeDueDate: number;
   feeStatus: StudentFeeStatus;
+  shifts?: StudentShiftsItem[];
   /** @nullable */
   nextDueDate?: string | null;
   /** @nullable */
@@ -160,6 +171,16 @@ export const StudentInputFeeStatus = {
   overdue: 'overdue',
 } as const;
 
+export type StudentInputShiftsItem = typeof StudentInputShiftsItem[keyof typeof StudentInputShiftsItem];
+
+
+export const StudentInputShiftsItem = {
+  morning: 'morning',
+  day: 'day',
+  full: 'full',
+  night: 'night',
+} as const;
+
 export interface StudentInput {
   name: string;
   phone: string;
@@ -169,6 +190,7 @@ export interface StudentInput {
   monthlyFee: number;
   feeDueDate: number;
   feeStatus?: StudentInputFeeStatus;
+  shifts?: StudentInputShiftsItem[];
   notes?: string;
   whatsappNumber?: string;
 }
@@ -182,6 +204,16 @@ export const StudentUpdateFeeStatus = {
   overdue: 'overdue',
 } as const;
 
+export type StudentUpdateShiftsItem = typeof StudentUpdateShiftsItem[keyof typeof StudentUpdateShiftsItem];
+
+
+export const StudentUpdateShiftsItem = {
+  morning: 'morning',
+  day: 'day',
+  full: 'full',
+  night: 'night',
+} as const;
+
 export interface StudentUpdate {
   name?: string;
   phone?: string;
@@ -191,6 +223,7 @@ export interface StudentUpdate {
   monthlyFee?: number;
   feeDueDate?: number;
   feeStatus?: StudentUpdateFeeStatus;
+  shifts?: StudentUpdateShiftsItem[];
   notes?: string;
   whatsappNumber?: string;
   isActive?: boolean;

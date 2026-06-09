@@ -26,6 +26,7 @@ interface StudentForm {
   monthlyFee: string;
   feeDueDate: string;
   feeStatus: string;
+  shifts: string[];
   notes: string;
   whatsappNumber: string;
 }
@@ -33,7 +34,7 @@ interface StudentForm {
 const defaultForm: StudentForm = {
   name: "", phone: "", fatherName: "", seatNumber: "",
   joiningDate: new Date().toISOString().split("T")[0]!,
-  monthlyFee: "800", feeDueDate: "1", feeStatus: "unpaid", notes: "", whatsappNumber: "",
+  monthlyFee: "800", feeDueDate: "1", feeStatus: "unpaid", shifts: [], notes: "", whatsappNumber: "",
 };
 
 export default function Students() {
@@ -85,6 +86,7 @@ export default function Students() {
         monthlyFee: Number(form.monthlyFee),
         feeDueDate: Number(form.feeDueDate) || 1,
         feeStatus: form.feeStatus,
+        shifts: form.shifts.length > 0 ? form.shifts : undefined,
         notes: form.notes || undefined,
         whatsappNumber: form.whatsappNumber || undefined,
       } as any,
@@ -287,6 +289,28 @@ export default function Students() {
                   <SelectItem value="paid">Paid</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label className="text-sm font-medium">Shifts</Label>
+              <div className="flex flex-wrap gap-3 p-3 border rounded-md bg-muted/30">
+                {["morning", "day", "full", "night"].map(shift => (
+                  <label key={shift} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.shifts.includes(shift)}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setForm(f => ({ ...f, shifts: [...f.shifts, shift] }));
+                        } else {
+                          setForm(f => ({ ...f, shifts: f.shifts.filter(s => s !== shift) }));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-gray-300"
+                    />
+                    <span className="text-sm capitalize">{shift}</span>
+                  </label>
+                ))}
+              </div>
             </div>
             <div className="space-y-1 sm:col-span-2">
               <Label htmlFor="notes" className="text-sm font-medium">Notes</Label>

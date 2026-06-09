@@ -45,7 +45,7 @@ router.post("/students", requireAuth, async (req: AuthRequest, res): Promise<voi
     const body = req.body as {
       name: string; phone: string; fatherName: string; seatNumber: number;
       joiningDate: string; monthlyFee: number; feeDueDate: number;
-      feeStatus?: string; notes?: string; whatsappNumber?: string;
+      feeStatus?: string; shifts?: string[]; notes?: string; whatsappNumber?: string;
     };
 
     const name = trimString(body.name);
@@ -62,6 +62,8 @@ router.post("/students", requireAuth, async (req: AuthRequest, res): Promise<voi
     const existing = await Student.findOne({ adminId: req.adminId, seatNumber, isActive: true }).select("_id").lean();
     if (existing) { res.status(400).json({ error: `Seat ${seatNumber} is already occupied` }); return; }
 
+    const shifts = Array.isArray(body.shifts) ? body.shifts.filter(s => ["morning", "day", "full", "night"].includes(s)) : [];
+
     const student = await Student.create({
       adminId: req.adminId,
       name,
@@ -72,6 +74,7 @@ router.post("/students", requireAuth, async (req: AuthRequest, res): Promise<voi
       monthlyFee,
       feeDueDate,
       feeStatus: body.feeStatus ?? "unpaid",
+      shifts: shifts.length > 0 ? shifts : [],
       nextDueDate: computeNextDueDate(feeDueDate),
       notes: trimString(body.notes),
       whatsappNumber: trimString(body.whatsappNumber),
@@ -107,9 +110,15 @@ router.put("/students/:id", requireAuth, async (req: AuthRequest, res): Promise<
       if (conflict) { res.status(400).json({ error: `Seat ${body["seatNumber"]} is already occupied` }); return; }
     }
 
-    const allowed = ["name", "phone", "fatherName", "seatNumber", "joiningDate", "monthlyFee", "feeDueDate", "feeStatus", "notes", "whatsappNumber", "isActive"];
+    const allowed = ["name", "phone", "fatherName", "seatNumber", "joiningDate", "monthlyFee", "feeDueDate", "feeStatus", "shifts", "notes", "whatsappNumber", "isActive"];
     for (const key of allowed) {
-      if (body[key] !== undefined) (student as any)[key] = body[key];
+      if (body[key] !== undefined) {
+        if (key === "shifts" && Array.isArray(body[key])) {
+          (student as any)[key] = (body[key] as string[]).filter(s => ["morning", "day", "full", "night"].includes(s));
+        } else {
+          (student as any)[key] = body[key];
+        }
+      }
     }
     if (body["feeDueDate"]) student.nextDueDate = computeNextDueDate(Number(body["feeDueDate"]));
 

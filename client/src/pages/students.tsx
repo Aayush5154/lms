@@ -200,6 +200,15 @@ export default function Students() {
                           <div>
                             <p className="font-medium text-sm">{student.name}</p>
                             <p className="text-xs text-muted-foreground">{(student as any).fatherName}</p>
+                            {(student as any).shifts && (student as any).shifts.length > 0 && (
+                              <div className="flex gap-1 mt-1 flex-wrap">
+                                {(student as any).shifts.map((shift: string) => (
+                                  <span key={shift} className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium capitalize">
+                                    {shift}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </TableCell>

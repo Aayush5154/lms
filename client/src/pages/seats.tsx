@@ -146,12 +146,26 @@ export default function Seats() {
                   <StatusBadge status={selectedSeat.status} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-sm border rounded-lg p-4 bg-muted/30">
-                <Info icon={<Phone className="w-3.5 h-3.5" />} label="Phone" value={selectedSeat.student.phone} />
-                <Info icon={<Hash className="w-3.5 h-3.5" />} label="Seat" value={`#${selectedSeat.student.seatNumber}`} />
-                <Info icon={<IndianRupee className="w-3.5 h-3.5" />} label="Monthly Fee" value={`₹${Number(selectedSeat.student.monthlyFee).toLocaleString()}`} />
-                <Info icon={<Calendar className="w-3.5 h-3.5" />} label="Next Due" value={selectedSeat.student.nextDueDate ? format(new Date(selectedSeat.student.nextDueDate), "dd MMM yyyy") : "—"} />
-                <Info icon={<Calendar className="w-3.5 h-3.5" />} label="Joined" value={selectedSeat.student.joiningDate ? format(new Date(selectedSeat.student.joiningDate), "dd MMM yyyy") : "—"} />
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3 text-sm border rounded-lg p-4 bg-muted/30">
+                  <Info icon={<Phone className="w-3.5 h-3.5" />} label="Phone" value={selectedSeat.student.phone} />
+                  <Info icon={<Hash className="w-3.5 h-3.5" />} label="Seat" value={`#${selectedSeat.student.seatNumber}`} />
+                  <Info icon={<IndianRupee className="w-3.5 h-3.5" />} label="Monthly Fee" value={`₹${Number(selectedSeat.student.monthlyFee).toLocaleString()}`} />
+                  <Info icon={<Calendar className="w-3.5 h-3.5" />} label="Next Due" value={selectedSeat.student.nextDueDate ? format(new Date(selectedSeat.student.nextDueDate), "dd MMM yyyy") : "—"} />
+                  <Info icon={<Calendar className="w-3.5 h-3.5" />} label="Joined" value={selectedSeat.student.joiningDate ? format(new Date(selectedSeat.student.joiningDate), "dd MMM yyyy") : "—"} />
+                </div>
+                {(selectedSeat.student as any).shifts && (selectedSeat.student as any).shifts.length > 0 && (
+                  <div className="text-sm border rounded-lg p-4 bg-muted/30">
+                    <p className="font-medium mb-2">Shifts</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {(selectedSeat.student as any).shifts.map((shift: string) => (
+                        <span key={shift} className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium capitalize">
+                          {shift}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <Link href={`/students/${selectedSeat.student.id}`}
                 className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors"

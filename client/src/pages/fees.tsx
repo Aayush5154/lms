@@ -241,6 +241,15 @@ function FeeTable({ students, isOverdue }: { students: Student[], isOverdue: boo
                       <div>
                         <div className="font-medium text-sm">{student.name}</div>
                         <div className="text-xs text-muted-foreground">{student.phone}</div>
+                        {(student as any).shifts && (student as any).shifts.length > 0 && (
+                          <div className="flex gap-1 mt-0.5 flex-wrap">
+                            {(student as any).shifts.map((shift: string) => (
+                              <span key={shift} className="text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 font-medium capitalize">
+                                {shift}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TableCell>

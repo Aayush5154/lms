@@ -183,6 +183,20 @@ export default function Dashboard() {
                         <div>
                           <p className="font-medium text-sm">{student.name}</p>
                           <p className="text-xs text-muted-foreground">Seat {student.seatNumber}</p>
+                          {(student as any).shifts && (student as any).shifts.length > 0 && (
+                            <div className="flex gap-1 mt-1 flex-wrap">
+                              {(student as any).shifts.slice(0, 2).map((shift: string) => (
+                                <span key={shift} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium capitalize">
+                                  {shift}
+                                </span>
+                              ))}
+                              {(student as any).shifts.length > 2 && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">
+                                  +{(student as any).shifts.length - 2}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-sm">₹{student.monthlyFee}</p>

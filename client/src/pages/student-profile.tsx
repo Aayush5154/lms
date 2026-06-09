@@ -158,7 +158,7 @@ export default function StudentProfile() {
               <p className="font-medium">{student.isActive ? "Active" : "Inactive"}</p>
             </div>
             {(student as any).shifts && (student as any).shifts.length > 0 && (
-              <div>
+              <div className="col-span-2">
                 <p className="text-muted-foreground">Shifts</p>
                 <div className="flex gap-1 flex-wrap mt-1">
                   {(student as any).shifts.map((shift: string) => (

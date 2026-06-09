@@ -33,6 +33,7 @@ export function formatStudent(s: Record<string, any>) {
     notes: s["notes"] ?? null,
     isActive: s["isActive"],
     whatsappNumber: s["whatsappNumber"] ?? null,
+    shifts: s["shifts"] ?? [],
     createdAt: s["createdAt"],
   };
 }

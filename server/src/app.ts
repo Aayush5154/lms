@@ -1,4 +1,5 @@
 import express, { type Express } from "express";
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import pinoHttp from "pino-http";
@@ -59,6 +60,13 @@ app.use("/api", router);
 app.use("/api", notFoundHandler);
 app.use(globalErrorHandler);
 
+if (isProduction()) {
+  const clientDist = path.resolve(process.cwd(), "../client/dist/public");
+  app.use(express.static(clientDist));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(clientDist, "index.html"));
+  });
+}
 connectDB()
   .then(() => seedDatabase())
   .then(() => startScheduler())

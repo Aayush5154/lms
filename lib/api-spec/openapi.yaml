@@ -1,0 +1,1114 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Library Management System API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: students
+    description: Student management
+  - name: seats
+    description: Seat management
+  - name: payments
+    description: Payment management
+  - name: fees
+    description: Fee management
+  - name: dashboard
+    description: Dashboard stats
+  - name: library
+    description: Library configuration
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: adminLogin
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/change-password:
+    post:
+      operationId: changePassword
+      tags: [auth]
+      summary: Change admin password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordInput"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/forgot-password:
+    post:
+      operationId: forgotPassword
+      tags: [auth]
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordInput"
+      responses:
+        "200":
+          description: Reset initiated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current admin
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+
+  /library:
+    get:
+      operationId: getLibraryConfig
+      tags: [library]
+      summary: Get library configuration
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Library config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryConfig"
+    put:
+      operationId: updateLibraryConfig
+      tags: [library]
+      summary: Update library configuration
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryConfigInput"
+      responses:
+        "200":
+          description: Updated config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryConfig"
+
+  /public/libraries/{id}:
+    get:
+      operationId: getPublicLibrary
+      tags: [library]
+      summary: Get public library profile
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public library profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibraryConfig"
+        "404":
+          description: Library not found
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /dashboard/revenue:
+    get:
+      operationId: getRevenueAnalytics
+      tags: [dashboard]
+      summary: Get revenue analytics (last 12 months)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Revenue analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlyRevenue"
+
+  /dashboard/occupancy:
+    get:
+      operationId: getOccupancyAnalytics
+      tags: [dashboard]
+      summary: Get occupancy analytics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Occupancy data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OccupancyAnalytics"
+
+  /dashboard/recent-payments:
+    get:
+      operationId: getRecentPayments
+      tags: [dashboard]
+      summary: Get recent payments
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Recent payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+
+  /dashboard/dues-today:
+    get:
+      operationId: getDuesToday
+      tags: [dashboard]
+      summary: Get students with fees due today
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Students with dues today
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+  /dashboard/overdue:
+    get:
+      operationId: getOverdueStudents
+      tags: [dashboard]
+      summary: Get overdue fee summary
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Overdue students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: List all students
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: feeStatus
+          in: query
+          schema:
+            type: string
+            enum: [paid, unpaid, all]
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentListResponse"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Add a new student
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Student created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get student by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    put:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update student
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Delete student
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /students/{id}/photo:
+    post:
+      operationId: uploadStudentPhoto
+      tags: [students]
+      summary: Upload student photo (base64)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhotoUploadInput"
+      responses:
+        "200":
+          description: Photo uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}/payments:
+    get:
+      operationId: getStudentPayments
+      tags: [students]
+      summary: Get payment history for a student
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Payment"
+
+  /seats:
+    get:
+      operationId: getSeatLayout
+      tags: [seats]
+      summary: Get all seats with occupancy
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [occupied, vacant, all]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Seat layout
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Seat"
+
+  /seats/config:
+    put:
+      operationId: updateSeatsConfig
+      tags: [seats]
+      summary: Set total number of seats
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeatsConfigInput"
+      responses:
+        "200":
+          description: Seats configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /payments:
+    get:
+      operationId: listPayments
+      tags: [payments]
+      summary: List all payments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: string
+        - name: year
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Payment list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentListResponse"
+    post:
+      operationId: recordPayment
+      tags: [payments]
+      summary: Record a new payment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInput"
+      responses:
+        "201":
+          description: Payment recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /payments/{id}:
+    get:
+      operationId: getPayment
+      tags: [payments]
+      summary: Get payment by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Payment detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /fees/mark-paid:
+    post:
+      operationId: markFeePaid
+      tags: [fees]
+      summary: Mark student fee as paid
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkFeePaidInput"
+      responses:
+        "200":
+          description: Fee marked paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  /fees/mark-unpaid:
+    post:
+      operationId: markFeeUnpaid
+      tags: [fees]
+      summary: Mark student fee as unpaid
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkFeeUnpaidInput"
+      responses:
+        "200":
+          description: Fee marked unpaid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /reports/monthly-revenue:
+    get:
+      operationId: getMonthlyRevenueReport
+      tags: [dashboard]
+      summary: Monthly revenue report data
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: integer
+        - name: year
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Monthly revenue report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlyRevenueReport"
+
+  /reports/pending-fees:
+    get:
+      operationId: getPendingFeesReport
+      tags: [dashboard]
+      summary: Pending fees report
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Pending fees report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    ChangePasswordInput:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+
+    ForgotPasswordInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [token, admin]
+      properties:
+        token:
+          type: string
+        admin:
+          $ref: "#/components/schemas/Admin"
+
+    Admin:
+      type: object
+      required: [id, email, name]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        whatsappNumber:
+          type: ["string", "null"]
+        libraryName:
+          type: string
+
+    LibraryConfig:
+      type: object
+      required: [libraryName, totalSeats, upiId, upiQrUrl, setupCompleted, language, theme]
+      properties:
+        libraryName:
+          type: string
+        totalSeats:
+          type: integer
+        upiId:
+          type: ["string", "null"]
+        upiQrUrl:
+          type: ["string", "null"]
+        whatsappNumber:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        setupCompleted:
+          type: boolean
+        language:
+          type: string
+        theme:
+          type: string
+        ownerName:
+          type: ["string", "null"]
+        city:
+          type: ["string", "null"]
+        state:
+          type: ["string", "null"]
+        openingTime:
+          type: ["string", "null"]
+        closingTime:
+          type: ["string", "null"]
+        monthlyFeeDefault:
+          type: ["number", "null"]
+        libraryType:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        facilities:
+          type: array
+          items:
+            type: string
+        googleMapsLink:
+          type: ["string", "null"]
+        logoUrl:
+          type: ["string", "null"]
+        logoPublicId:
+          type: ["string", "null"]
+        coverImageUrl:
+          type: ["string", "null"]
+        coverPublicId:
+          type: ["string", "null"]
+        galleryImages:
+          type: array
+          items:
+            type: string
+        websiteEnabled:
+          type: boolean
+        websiteSlug:
+          type: ["string", "null"]
+
+    LibraryConfigInput:
+      type: object
+      properties:
+        libraryName:
+          type: string
+        totalSeats:
+          type: integer
+        upiId:
+          type: string
+        upiQrUrl:
+          type: string
+        whatsappNumber:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        setupCompleted:
+          type: boolean
+        language:
+          type: string
+        theme:
+          type: string
+        ownerName:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        openingTime:
+          type: string
+        closingTime:
+          type: string
+        monthlyFeeDefault:
+          type: number
+        libraryType:
+          type: string
+        description:
+          type: string
+        facilities:
+          type: array
+          items:
+            type: string
+        googleMapsLink:
+          type: string
+        logoUrl:
+          type: string
+        logoPublicId:
+          type: string
+        coverImageUrl:
+          type: string
+        coverPublicId:
+          type: string
+        galleryImages:
+          type: array
+          items:
+            type: string
+        websiteEnabled:
+          type: boolean
+        websiteSlug:
+          type: string
+
+    Student:
+      type: object
+      required: [id, name, phone, fatherName, seatNumber, joiningDate, monthlyFee, feeDueDate, feeStatus]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        fatherName:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        seatNumber:
+          type: integer
+        joiningDate:
+          type: string
+        monthlyFee:
+          type: number
+        feeDueDate:
+          type: integer
+        feeStatus:
+          type: string
+          enum: [paid, unpaid, overdue]
+        nextDueDate:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+        whatsappNumber:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    StudentInput:
+      type: object
+      required: [name, phone, fatherName, seatNumber, joiningDate, monthlyFee, feeDueDate]
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        fatherName:
+          type: string
+        seatNumber:
+          type: integer
+        joiningDate:
+          type: string
+        monthlyFee:
+          type: number
+        feeDueDate:
+          type: integer
+        feeStatus:
+          type: string
+          enum: [paid, unpaid, overdue]
+        notes:
+          type: string
+        whatsappNumber:
+          type: string
+
+    StudentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        fatherName:
+          type: string
+        seatNumber:
+          type: integer
+        joiningDate:
+          type: string
+        monthlyFee:
+          type: number
+        feeDueDate:
+          type: integer
+        feeStatus:
+          type: string
+          enum: [paid, unpaid, overdue]
+        notes:
+          type: string
+        whatsappNumber:
+          type: string
+        isActive:
+          type: boolean
+
+    PhotoUploadInput:
+      type: object
+      required: [photoBase64]
+      properties:
+        photoBase64:
+          type: string
+
+    StudentListResponse:
+      type: object
+      required: [students, total, page, limit]
+      properties:
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/Student"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    Seat:
+      type: object
+      required: [seatNumber, isOccupied]
+      properties:
+        seatNumber:
+          type: integer
+        isOccupied:
+          type: boolean
+        status:
+          type: string
+          enum: [vacant, paid, due-soon, overdue]
+        student:
+          $ref: "#/components/schemas/Student"
+
+    SeatsConfigInput:
+      type: object
+      required: [totalSeats]
+      properties:
+        totalSeats:
+          type: integer
+
+    Payment:
+      type: object
+      required: [id, studentId, amount, paymentDate, receiptNumber, month, year]
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        studentName:
+          type: string
+        seatNumber:
+          type: integer
+        amount:
+          type: number
+        paymentDate:
+          type: string
+        receiptNumber:
+          type: string
+        month:
+          type: integer
+        year:
+          type: integer
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    PaymentInput:
+      type: object
+      required: [studentId, amount, month, year]
+      properties:
+        studentId:
+          type: string
+        amount:
+          type: number
+        month:
+          type: integer
+        year:
+          type: integer
+        paymentDate:
+          type: string
+        notes:
+          type: string
+
+    PaymentListResponse:
+      type: object
+      required: [payments, total, page, limit]
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Payment"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    MarkFeePaidInput:
+      type: object
+      required: [studentId, amount, month, year]
+      properties:
+        studentId:
+          type: string
+        amount:
+          type: number
+        month:
+          type: integer
+        year:
+          type: integer
+        notes:
+          type: string
+
+    MarkFeeUnpaidInput:
+      type: object
+      required: [studentId]
+      properties:
+        studentId:
+          type: string
+
+    DashboardStats:
+      type: object
+      required: [totalSeats, occupiedSeats, vacantSeats, totalStudents, pendingFees, todayCollection, monthlyCollection]
+      properties:
+        totalSeats:
+          type: integer
+        occupiedSeats:
+          type: integer
+        vacantSeats:
+          type: integer
+        totalStudents:
+          type: integer
+        pendingFees:
+          type: number
+        todayCollection:
+          type: number
+        monthlyCollection:
+          type: number
+        overdueCount:
+          type: integer
+
+    MonthlyRevenue:
+      type: object
+      required: [month, year, revenue, count]
+      properties:
+        month:
+          type: integer
+        year:
+          type: integer
+        monthLabel:
+          type: string
+        revenue:
+          type: number
+        count:
+          type: integer
+
+    OccupancyAnalytics:
+      type: object
+      required: [occupied, vacant, total]
+      properties:
+        occupied:
+          type: integer
+        vacant:
+          type: integer
+        total:
+          type: integer
+        occupancyRate:
+          type: number
+
+    MonthlyRevenueReport:
+      type: object
+      required: [month, year, totalRevenue, totalStudents, payments]
+      properties:
+        month:
+          type: integer
+        year:
+          type: integer
+        totalRevenue:
+          type: number
+        totalStudents:
+          type: integer
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Payment"

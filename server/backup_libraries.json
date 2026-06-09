@@ -1,0 +1,163 @@
+[
+  {
+    "_id": "6a241fd0731b3af7f09f8315",
+    "adminId": "6a241fcf731b3af7f09f8314",
+    "libraryName": "My Study Library",
+    "totalSeats": 50,
+    "isApproved": true,
+    "isSuspended": false,
+    "createdAt": "2026-06-06T13:25:36.232Z",
+    "updatedAt": "2026-06-07T11:37:19.252Z",
+    "__v": 2,
+    "address": "vikas viahr ",
+    "city": "tonk",
+    "closingTime": "22:00",
+    "description": "jai hind",
+    "facilities": [
+      "Ac",
+      "wifi",
+      "water cooloer"
+    ],
+    "googleMapsLink": "",
+    "language": "en",
+    "libraryType": "study-library",
+    "monthlyFeeDefault": 1000,
+    "openingTime": "08:00",
+    "ownerName": "Aayush",
+    "phone": "8875511544",
+    "setupCompleted": true,
+    "state": "raj",
+    "theme": "dark",
+    "upiId": "",
+    "upiQrUrl": "",
+    "whatsappNumber": "8875511544",
+    "websiteEnabled": true,
+    "websiteSlug": "my-study-library-aveoa6",
+    "gallery": [
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831648/library-management/galleries/pp9ydffseztw5elmtwy0.jpg",
+        "public_id": "library-management/galleries/pp9ydffseztw5elmtwy0",
+        "_id": "6a2555a22cb35facbb728502"
+      },
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831649/library-management/galleries/c3rot4z6rkbmh4w9l82y.png",
+        "public_id": "library-management/galleries/c3rot4z6rkbmh4w9l82y",
+        "_id": "6a2555a22cb35facbb728503"
+      }
+    ],
+    "logo": {
+      "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831643/library-management/logos/yo59hmdboifetb0coyrk.jpg",
+      "public_id": "library-management/logos/yo59hmdboifetb0coyrk"
+    },
+    "websiteTheme": "black-gold"
+  },
+  {
+    "_id": "6a242139731b3af7f09f8321",
+    "adminId": "6a242138731b3af7f09f8320",
+    "libraryName": "jai",
+    "totalSeats": 50,
+    "isApproved": true,
+    "isSuspended": true,
+    "createdAt": "2026-06-06T13:31:37.189Z",
+    "updatedAt": "2026-06-07T11:37:19.252Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a24d3ef933fe2df77870995",
+    "adminId": "6a241fd0731b3af7f09f831f",
+    "libraryName": "LMS Platform",
+    "totalSeats": 50,
+    "isApproved": true,
+    "isSuspended": false,
+    "createdAt": "2026-06-07T02:14:07.156Z",
+    "updatedAt": "2026-06-07T11:37:19.252Z",
+    "__v": 1,
+    "address": "",
+    "city": "",
+    "closingTime": "22:00",
+    "description": "",
+    "facilities": [],
+    "googleMapsLink": "",
+    "language": "en",
+    "libraryType": "study-library",
+    "monthlyFeeDefault": 1000,
+    "openingTime": "08:00",
+    "ownerName": "",
+    "phone": "",
+    "setupCompleted": true,
+    "state": "",
+    "theme": "dark",
+    "upiId": "",
+    "upiQrUrl": "",
+    "whatsappNumber": "",
+    "websiteEnabled": true
+  },
+  {
+    "_id": "6a254d64b74e3afdd7020915",
+    "adminId": "6a254d63b74e3afdd7020914",
+    "libraryName": "Aayush-Libs",
+    "totalSeats": 50,
+    "isApproved": true,
+    "isSuspended": false,
+    "setupCompleted": true,
+    "language": "en",
+    "theme": "dark",
+    "facilities": [
+      "Ac",
+      "High speed Wifi",
+      "Ro water",
+      "Discussion Room"
+    ],
+    "websiteEnabled": true,
+    "websiteTheme": "premium-purple",
+    "createdAt": "2026-06-07T10:52:20.175Z",
+    "updatedAt": "2026-06-07T11:37:19.252Z",
+    "__v": 2,
+    "address": "59 vikas vihar colony tonk raj depo ke piche ",
+    "city": "Tonk",
+    "closingTime": "22:00",
+    "description": "Come here for the silence he includes the ",
+    "googleMapsLink": "",
+    "libraryType": "study-library",
+    "monthlyFeeDefault": 1000,
+    "openingTime": "08:00",
+    "ownerName": "Aayush",
+    "phone": "8875511544",
+    "state": "Rajasthan",
+    "upiId": "",
+    "upiQrUrl": "",
+    "whatsappNumber": "+91 8875511544",
+    "websiteSlug": "Aayush-lib",
+    "gallery": [
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831652/library-management/galleries/tgt7fjpknibhgjmuiysv.jpg",
+        "public_id": "library-management/galleries/tgt7fjpknibhgjmuiysv",
+        "_id": "6a2555af2cb35facbb728504"
+      },
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831654/library-management/galleries/g5b4iuxtcbhzqvcpal6z.jpg",
+        "public_id": "library-management/galleries/g5b4iuxtcbhzqvcpal6z",
+        "_id": "6a2555af2cb35facbb728505"
+      },
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831655/library-management/galleries/qhtv7xcmkucmxsfx0mnb.jpg",
+        "public_id": "library-management/galleries/qhtv7xcmkucmxsfx0mnb",
+        "_id": "6a2555af2cb35facbb728506"
+      },
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831656/library-management/galleries/ojxy7rjpenjwndwsyh2h.jpg",
+        "public_id": "library-management/galleries/ojxy7rjpenjwndwsyh2h",
+        "_id": "6a2555af2cb35facbb728507"
+      },
+      {
+        "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831660/library-management/galleries/ybuvyfuus4akpm7iqlfv.jpg",
+        "public_id": "library-management/galleries/ybuvyfuus4akpm7iqlfv",
+        "_id": "6a2555af2cb35facbb728508"
+      }
+    ],
+    "logo": {
+      "secure_url": "https://res.cloudinary.com/dssul5bfu/image/upload/v1780831651/library-management/logos/ep19jy6ebiq7fpwbqycg.jpg",
+      "public_id": "library-management/logos/ep19jy6ebiq7fpwbqycg"
+    }
+  }
+]

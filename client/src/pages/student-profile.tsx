@@ -157,9 +157,9 @@ export default function StudentProfile() {
               <p className="text-muted-foreground">Status</p>
               <p className="font-medium">{student.isActive ? "Active" : "Inactive"}</p>
             </div>
-            {(student as any).shifts && (student as any).shifts.length > 0 && (
-              <div className="col-span-2">
-                <p className="text-muted-foreground">Shifts</p>
+            <div className="col-span-2">
+              <p className="text-muted-foreground">Shifts</p>
+              {(student as any).shifts && (student as any).shifts.length > 0 ? (
                 <div className="flex gap-1 flex-wrap mt-1">
                   {(student as any).shifts.map((shift: string) => (
                     <Badge key={shift} className="bg-blue-100 text-blue-700 hover:bg-blue-100 capitalize text-xs">
@@ -167,8 +167,10 @@ export default function StudentProfile() {
                     </Badge>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="font-medium text-muted-foreground">None assigned</p>
+              )}
+            </div>
             {student.notes && (
               <div className="col-span-2">
                 <p className="text-muted-foreground">Notes</p>

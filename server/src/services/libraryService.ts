@@ -103,5 +103,6 @@ export function formatLibrary(lib: any) {
     websiteEnabled: lib.websiteEnabled,
     websiteSlug: lib.websiteSlug ?? null,
     websiteTheme: lib.websiteTheme ?? "black-gold",
+    membershipPlans: lib.membershipPlans ?? [],
   };
 }

@@ -17,6 +17,7 @@ const Fees = lazy(() => import("@/pages/fees"));
 const Payments = lazy(() => import("@/pages/payments"));
 const Reports = lazy(() => import("@/pages/reports"));
 const Settings = lazy(() => import("@/pages/settings"));
+const Plans = lazy(() => import("@/pages/plans"));
 const ChangePassword = lazy(() => import("@/pages/change-password"));
 const SuperAdmin = lazy(() => import("@/pages/super-admin"));
 const SetupWizard = lazy(() => import("@/pages/setup"));
@@ -62,6 +63,7 @@ function ProtectedRoutes() {
         <Route path="/payments" component={Payments} />
         <Route path="/reports" component={Reports} />
         <Route path="/settings" component={Settings} />
+        <Route path="/plans" component={Plans} />
         <Route path="/change-password" component={ChangePassword} />
         <Route path="/super-admin" component={SuperAdmin} />
         <Route path="/setup" component={SetupWizard} />

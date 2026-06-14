@@ -88,6 +88,13 @@ export interface LibraryConfig {
   websiteEnabled?: boolean;
   /** @nullable */
   websiteSlug?: string | null;
+  membershipPlans?: {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    recommended: boolean;
+  }[];
 }
 
 export interface LibraryConfigInput {
@@ -118,6 +125,13 @@ export interface LibraryConfigInput {
   galleryImages?: string[];
   websiteEnabled?: boolean;
   websiteSlug?: string;
+  membershipPlans?: {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    recommended: boolean;
+  }[];
 }
 
 export type StudentFeeStatus = typeof StudentFeeStatus[keyof typeof StudentFeeStatus];

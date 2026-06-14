@@ -34,4 +34,11 @@ export interface LibraryConfigInput {
   galleryImages?: string[];
   websiteEnabled?: boolean;
   websiteSlug?: string;
+  membershipPlans?: {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    recommended: boolean;
+  }[];
 }

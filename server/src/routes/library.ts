@@ -40,7 +40,7 @@ router.put("/library", requireAuth, async (req: AuthRequest, res): Promise<void>
     // Update all allowed fields
     const fields = ['libraryName', 'totalSeats', 'upiId', 'upiQrUrl', 'whatsappNumber', 'address', 'phone', 
       'setupCompleted', 'language', 'theme', 'ownerName', 'city', 'state', 'openingTime', 'closingTime', 
-      'monthlyFeeDefault', 'libraryType', 'description', 'facilities', 'googleMapsLink', 'websiteEnabled', 'websiteSlug', 'websiteTheme'];
+      'monthlyFeeDefault', 'libraryType', 'description', 'facilities', 'googleMapsLink', 'websiteEnabled', 'websiteSlug', 'websiteTheme', 'membershipPlans'];
     
     for (const field of fields) {
       if (data[field] !== undefined) {

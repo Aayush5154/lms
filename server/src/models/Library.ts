@@ -36,6 +36,13 @@ export interface ILibrary extends Document {
   logo?: ICloudinaryImage;
   coverImage?: ICloudinaryImage;
   gallery: ICloudinaryImage[];
+  membershipPlans: {
+    name: string;
+    price: string;
+    description: string;
+    features: string[];
+    recommended: boolean;
+  }[];
 }
 
 const LibrarySchema = new Schema<ILibrary>(
@@ -79,6 +86,16 @@ const LibrarySchema = new Schema<ILibrary>(
       type: [{
         secure_url: { type: String },
         public_id: { type: String }
+      }],
+      default: []
+    },
+    membershipPlans: {
+      type: [{
+        name: { type: String },
+        price: { type: String },
+        description: { type: String },
+        features: { type: [String] },
+        recommended: { type: Boolean, default: false }
       }],
       default: []
     }

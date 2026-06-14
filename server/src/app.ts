@@ -70,6 +70,9 @@ if (isProduction()) {
 connectDB()
   .then(() => seedDatabase())
   .then(() => startScheduler())
-  .catch(err => logger.error({ err }, "DB init error"));
+  .catch(err => {
+    logger.error({ err }, "Fatal: database initialization failed — shutting down");
+    process.exit(1);
+  });
 
 export default app;

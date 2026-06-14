@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Users, Grid, CreditCard, Receipt, BarChart3, Settings, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, Users, Grid, CreditCard, Receipt, BarChart3, Settings, LogOut, Shield, Tags } from "lucide-react";
 
 export function AppSidebar() {
   const [location] = useLocation();
@@ -30,6 +30,7 @@ export function AppSidebar() {
     { name: t("Recent Payments"), href: "/payments", icon: Receipt },
     { name: t("Reports"), href: "/reports", icon: BarChart3 },
     { name: t("Settings"), href: "/settings", icon: Settings },
+    { name: t("Pricing Plans"), href: "/plans", icon: Tags },
     ...(isSuperAdmin ? [{ name: t("Super Admin"), href: "/super-admin", icon: Shield }] : []),
   ];
 

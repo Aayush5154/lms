@@ -63,7 +63,7 @@ app.use(globalErrorHandler);
 if (isProduction()) {
   const clientDist = path.resolve(process.cwd(), "../client/dist/public");
   app.use(express.static(clientDist));
-  app.get("*", (req, res) => {
+  app.get("/{*path}", (req, res) => {
     res.sendFile(path.resolve(clientDist, "index.html"));
   });
 }

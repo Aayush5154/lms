@@ -2,9 +2,9 @@ import { useRoute } from "wouter";
 import { useState, useEffect } from "react";
 import { useGetPublicLibrary } from "@workspace/api-client-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Wifi, Wind, Zap, Shield, Monitor, 
-  MapPin, Phone, Mail, Instagram, Facebook, Twitter, 
+import {
+  Wifi, Wind, Zap, Shield, Monitor,
+  MapPin, Phone, Mail, Instagram, Facebook, Twitter,
   CheckCircle2, Star, ChevronRight, X, Menu, Users, Coffee, Check,
   Droplet, BatteryCharging, Video, Armchair, MessageSquare, Printer, Newspaper, Clock, ChevronLeft, ArrowRight, BookOpen
 } from "lucide-react";
@@ -117,13 +117,13 @@ export default function PublicLibrary() {
     return "Premium Quality";
   };
 
-  const backendFacilities = library.facilities && library.facilities.length > 0 
-    ? library.facilities 
+  const backendFacilities = library.facilities && library.facilities.length > 0
+    ? library.facilities
     : [
-        "High-Speed WiFi", "Air Conditioned", "Power Backup", "RO Water",
-        "Lockers", "CCTV Security", "Ergonomic Chairs", "Charging Ports", 
-        "Discussion Area", "Printing", "Computer Access", "Newspaper Corner"
-      ];
+      "High-Speed WiFi", "Air Conditioned", "Power Backup", "RO Water",
+      "Lockers", "CCTV Security", "Ergonomic Chairs", "Charging Ports",
+      "Discussion Area", "Printing", "Computer Access", "Newspaper Corner"
+    ];
 
   const topFeatures = backendFacilities.slice(0, 6).map((fac: string) => ({
     icon: getFacilityIcon(fac, 24),
@@ -144,7 +144,7 @@ export default function PublicLibrary() {
 
   return (
     <div style={{ ...cssVars, backgroundColor: "var(--bg)", color: "var(--text)" }} className="min-h-screen relative font-sans">
-      
+
       {/* HEADER */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[var(--card)] shadow-md py-3' : 'bg-[var(--card)] py-4'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -214,17 +214,17 @@ export default function PublicLibrary() {
               <Star size={16} fill="currentColor" style={{ color: "var(--accent)" }} />
               <span className="text-sm font-bold tracking-widest uppercase text-[var(--text-muted)]">Premium Study Environment</span>
             </div>
-            
+
             <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1] text-[var(--text)]">
               A Premium Space For <br />
               Focused Learning & <br />
               <span style={{ color: "var(--accent)" }}>Real Results.</span>
             </h1>
-            
+
             <p className="text-lg text-[var(--text-muted)] mb-10 max-w-lg leading-relaxed font-medium">
               {library.description || "A calm, comfortable and distraction-free environment designed for serious learners and achievers."}
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
               <button onClick={() => scrollTo("facilities")} className="w-full sm:w-auto px-8 py-3.5 rounded-md font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg" style={{ backgroundColor: "var(--accent)", color: "var(--accent-text)" }}>
                 Explore Facilities <ChevronRight size={20} />
@@ -237,8 +237,8 @@ export default function PublicLibrary() {
             {/* Active Learners */}
             <div className="flex items-center gap-4">
               <div className="flex -space-x-3">
-                {[1,2,3,4].map(i => (
-                  <img key={i} src={`https://i.pravatar.cc/100?img=${i+10}`} alt="Student" className="w-12 h-12 rounded-full border-2 border-[var(--bg)] object-cover" />
+                {[1, 2, 3, 4].map(i => (
+                  <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Student" className="w-12 h-12 rounded-full border-2 border-[var(--bg)] object-cover" />
                 ))}
               </div>
               <div>
@@ -288,7 +288,7 @@ export default function PublicLibrary() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="lg:w-1/3 text-left">
             <div className="text-sm font-bold tracking-widest uppercase mb-2" style={{ color: "var(--accent)" }}>Why Choose Us?</div>
-            <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">Built For Focus.<br/>Designed For Success.</h2>
+            <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">Built For Focus.<br />Designed For Success.</h2>
           </div>
           <div className="lg:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -360,8 +360,8 @@ export default function PublicLibrary() {
                       </li>
                     ))}
                   </ul>
-                  <button onClick={handleWhatsApp} className="w-full py-3 rounded-md font-bold text-sm transition-all shadow-sm border" style={{ 
-                    backgroundColor: isPopular ? "var(--accent)" : "transparent", 
+                  <button onClick={handleWhatsApp} className="w-full py-3 rounded-md font-bold text-sm transition-all shadow-sm border" style={{
+                    backgroundColor: isPopular ? "var(--accent)" : "transparent",
                     color: isPopular ? "var(--accent-text)" : "var(--text)",
                     borderColor: isPopular ? "var(--accent)" : "var(--card-border)"
                   }}>
@@ -382,7 +382,7 @@ export default function PublicLibrary() {
         </div>
         <div className="flex flex-col lg:flex-row gap-12 bg-[var(--card)] p-4 sm:p-8 rounded-3xl border border-[var(--card-border)] shadow-sm">
           <div className="lg:w-1/2 rounded-2xl overflow-hidden min-h-[300px] border border-[var(--card-border)]">
-             <img src="/google-maps-placeholder.jpeg" alt="Location Map" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80"; }} />
+            <img src="/google-maps-placeholder.jpeg" alt="Location Map" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80"; }} />
           </div>
           <div className="lg:w-1/2 flex flex-col justify-center py-4">
             <div className="grid sm:grid-cols-2 gap-8 mb-10">
@@ -390,7 +390,7 @@ export default function PublicLibrary() {
                 <MapPin size={24} className="shrink-0" style={{ color: "var(--accent)" }} />
                 <div>
                   <h4 className="font-bold text-[var(--text)] mb-1">Address</h4>
-                  <p className="text-sm text-[var(--text-muted)] font-medium leading-relaxed">{library.address}<br/>{library.city}, {library.state || "Rajasthan"}</p>
+                  <p className="text-sm text-[var(--text-muted)] font-medium leading-relaxed">{library.address}<br />{library.city}, {library.state || "Rajasthan"}</p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -473,7 +473,7 @@ export default function PublicLibrary() {
                 <a href="#" className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-[var(--accent)] transition-colors"><Twitter size={16} /></a>
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-bold text-base mb-6">Quick Links</h4>
               <ul className="space-y-3 text-sm font-medium opacity-70">
@@ -504,13 +504,13 @@ export default function PublicLibrary() {
               </ul>
             </div>
           </div>
-          
+
           <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium opacity-60">
             <div>&copy; {new Date().getFullYear()} {library.libraryName}. All rights reserved.</div>
             <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="flex items-center gap-2"><MapPin size={14}/> {library.city}, {library.state || "Rajasthan"}</div>
-              <div className="flex items-center gap-2"><Phone size={14}/> {library.phone || library.whatsappNumber || "8875511522"}</div>
-              <div className="flex items-center gap-2"><Mail size={14}/> contact@study-space.com</div>
+              <div className="flex items-center gap-2"><MapPin size={14} /> {library.city}, {library.state || "Rajasthan"}</div>
+              <div className="flex items-center gap-2"><Phone size={14} /> {library.phone || library.whatsappNumber || "8875511522"}</div>
+              <div className="flex items-center gap-2"><Mail size={14} /> contact@study-space.com</div>
             </div>
           </div>
         </div>

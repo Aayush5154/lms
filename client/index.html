@@ -4,20 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Library Management System</title>
-    <meta name="description" content="Library Management System. Update this description to reflect the app." />
+    <meta name="description" content="Premium Library Management System — manage students, seats, fees, and more." />
     <meta name="robots" content="index, follow" />
     <meta property="og:title" content="Library Management System" />
-    <meta property="og:description" content="Library Management System. Update this description to reflect the app." />
+    <meta property="og:description" content="Premium Library Management System — manage students, seats, fees, and more." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Library Management System" />
-    <meta name="twitter:description" content="Library Management System. Update this description to reflect the app." />
+    <meta name="twitter:description" content="Premium Library Management System — manage students, seats, fees, and more." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Splash screen styles — scoped to #splash only, no global overrides -->
+    <style id="splash-styles">
+      #splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0a;font-family:'Inter',system-ui,-apple-system,sans-serif;transition:opacity .4s ease,visibility .4s ease}
+      #splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+      #splash .splash-icon{width:56px;height:56px;margin-bottom:24px;color:#FFD700;animation:splash-pulse 2s ease-in-out infinite}
+      #splash .splash-title{font-size:20px;font-weight:700;letter-spacing:1px;color:#fff;margin-bottom:8px}
+      #splash .splash-sub{font-size:13px;font-weight:500;color:#888;margin-bottom:32px}
+      #splash .splash-bar{width:200px;height:3px;background:#1a1a1a;border-radius:8px;overflow:hidden}
+      #splash .splash-bar-inner{height:100%;width:30%;background:linear-gradient(90deg,#FFD700,#FFF0A0);border-radius:8px;animation:splash-loading 1.4s ease-in-out infinite}
+      @keyframes splash-loading{0%{transform:translateX(-100%)}100%{transform:translateX(450%)}}
+      @keyframes splash-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.95)}}
+    </style>
   </head>
   <body>
+    <!-- Instant splash screen — visible in < 50ms, before any JS loads -->
+    <div id="splash">
+      <svg class="splash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>
+      </svg>
+      <div class="splash-title">LIBRARY NEXUS</div>
+      <div class="splash-sub">Loading your workspace…</div>
+      <div class="splash-bar"><div class="splash-bar-inner"></div></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

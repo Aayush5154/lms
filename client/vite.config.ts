@@ -28,10 +28,16 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) return undefined;
+          // Heavy libs used only on specific pages — split them out
           if (id.includes("recharts")) return "charts";
           if (id.includes("xlsx") || id.includes("jspdf")) return "exports";
+          if (id.includes("framer-motion")) return "framer";
+          if (id.includes("i18next") || id.includes("react-i18next")) return "i18n";
+          if (id.includes("lucide-react")) return "icons";
+          // UI framework
           if (id.includes("@radix-ui")) return "ui";
           if (id.includes("@tanstack")) return "query";
+          // Core React runtime
           if (id.includes("react") || id.includes("wouter") || id.includes("next-themes")) return "react-vendor";
           return "vendor";
         },

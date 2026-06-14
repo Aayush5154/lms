@@ -5,6 +5,7 @@ import helmet from "helmet";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./utils/logger";
+import { setDbReady } from "./config/readiness";
 import { connectDB } from "./config/db";
 import { seedDatabase } from "./utils/seed";
 import { startScheduler } from "./services/scheduler";
@@ -56,24 +57,48 @@ app.use(apiRateLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(sanitizeMongoInput);
+
+// ─── Serve static files IMMEDIATELY (before DB is ready) ─────────────
+// This lets the client HTML/JS/CSS load while the server is still
+// connecting to MongoDB, drastically reducing perceived cold-start time.
+if (isProduction()) {
+  const clientDist = path.resolve(process.cwd(), "../client/dist/public");
+  app.use(express.static(clientDist, {
+    maxAge: "1y",           // cache hashed assets aggressively
+    immutable: true,        // hashed filenames = safe to cache forever
+  }));
+}
+
 app.use("/api", router);
 app.use("/api", notFoundHandler);
 
+// SPA fallback for client-side routing (must come AFTER /api routes)
 if (isProduction()) {
   const clientDist = path.resolve(process.cwd(), "../client/dist/public");
-  app.use(express.static(clientDist));
   app.get("/{*path}", (req, res) => {
     res.sendFile(path.resolve(clientDist, "index.html"));
   });
 }
 
 app.use(globalErrorHandler);
-connectDB()
-  .then(() => seedDatabase())
-  .then(() => startScheduler())
-  .catch(err => {
+
+// ─── Non-blocking startup: start listening BEFORE DB connects ────────
+// The server starts accepting HTTP requests immediately so Render stops
+// showing the cold-start splash. DB connection happens in the background.
+async function initializeBackend(): Promise<void> {
+  try {
+    await connectDB();
+    setDbReady(true);
+    await seedDatabase();
+    startScheduler();
+    logger.info("Backend fully initialized");
+  } catch (err) {
     logger.error({ err }, "Fatal: database initialization failed — shutting down");
     process.exit(1);
-  });
+  }
+}
+
+// Kick off background initialization
+initializeBackend();
 
 export default app;

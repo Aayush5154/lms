@@ -33,6 +33,7 @@ export default function Settings() {
     closingTime: "",
     description: "",
     googleMapsLink: "",
+    facilities: "",
   });
 
   // Photo upload state
@@ -60,6 +61,7 @@ export default function Settings() {
         closingTime: (config as any).closingTime || "",
         description: (config as any).description || "",
         googleMapsLink: (config as any).googleMapsLink || "",
+        facilities: ((config as any).facilities || []).join(", "),
       });
       // Seed existing images
       if ((config as any).logoUrl) setLogoPreview((config as any).logoUrl);
@@ -101,6 +103,7 @@ export default function Settings() {
       closingTime: form.closingTime.trim() || undefined,
       description: form.description.trim() || undefined,
       googleMapsLink: form.googleMapsLink.trim() || undefined,
+      facilities: form.facilities.split(",").map(f => f.trim()).filter(Boolean),
     });
   };
 
@@ -271,6 +274,21 @@ export default function Settings() {
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
             />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="facilities" className="text-sm font-medium">Facilities (Comma Separated)</Label>
+            <textarea
+              id="facilities"
+              rows={2}
+              placeholder="AC, High Speed WiFi, RO Water, Discussion Room"
+              value={form.facilities}
+              onChange={(e) => setForm((f) => ({ ...f, facilities: e.target.value }))}
+              className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+            />
+            <p className="text-xs text-muted-foreground">
+              These facilities will be displayed on your public website. Leave empty to show the default facilities.
+            </p>
           </div>
 
           {/* Google Maps Link */}

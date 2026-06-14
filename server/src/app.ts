@@ -58,7 +58,6 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(sanitizeMongoInput);
 app.use("/api", router);
 app.use("/api", notFoundHandler);
-app.use(globalErrorHandler);
 
 if (isProduction()) {
   const clientDist = path.resolve(process.cwd(), "../client/dist/public");
@@ -67,6 +66,8 @@ if (isProduction()) {
     res.sendFile(path.resolve(clientDist, "index.html"));
   });
 }
+
+app.use(globalErrorHandler);
 connectDB()
   .then(() => seedDatabase())
   .then(() => startScheduler())

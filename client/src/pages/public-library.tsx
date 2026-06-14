@@ -6,7 +6,7 @@ import {
   Wifi, Wind, Zap, Shield, Monitor, 
   MapPin, Phone, Mail, Instagram, Facebook, Twitter, 
   CheckCircle2, Star, ChevronRight, X, Menu, Users, Coffee, Check,
-  Droplet, BatteryCharging, Video, Armchair, MessageSquare, Printer, Newspaper, Clock, ChevronLeft, ArrowRight
+  Droplet, BatteryCharging, Video, Armchair, MessageSquare, Printer, Newspaper, Clock, ChevronLeft, ArrowRight, BookOpen
 } from "lucide-react";
 import { getTheme } from "@/utils/websiteThemes";
 
@@ -222,7 +222,7 @@ export default function PublicLibrary() {
             </h1>
             
             <p className="text-lg text-[var(--text-muted)] mb-10 max-w-lg leading-relaxed font-medium">
-              {library.aboutUs || "A calm, comfortable and distraction-free environment designed for serious learners and achievers."}
+              {library.description || "A calm, comfortable and distraction-free environment designed for serious learners and achievers."}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">

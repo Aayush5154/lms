@@ -21,6 +21,7 @@ export default function PublicLibrary() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [showFullGallery, setShowFullGallery] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -148,13 +149,13 @@ export default function PublicLibrary() {
       {/* HEADER */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[var(--card)] shadow-md py-3' : 'bg-[var(--card)] py-4'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollTo("home")}>
+          <div className="flex items-center gap-3 cursor-pointer max-w-[70%]" onClick={() => scrollTo("home")}>
             {library.logoUrl ? (
-              <img src={library.logoUrl} alt="Logo" className="w-12 h-12 object-contain" />
+              <img src={library.logoUrl} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
             ) : (
-              <div className="flex items-center gap-2">
-                <BookOpen size={32} style={{ color: "var(--accent)" }} />
-                <span className="font-extrabold text-xl tracking-tight hidden sm:block uppercase">{library.libraryName}</span>
+              <div className="flex items-center gap-2 overflow-hidden">
+                <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 shrink-0" style={{ color: "var(--accent)" }} />
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight truncate uppercase">{library.libraryName}</span>
               </div>
             )}
           </div>
@@ -204,7 +205,7 @@ export default function PublicLibrary() {
         {/* Background Image with Fade */}
         <div className="absolute top-0 right-0 w-full lg:w-[65%] h-full z-0 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg)] via-[var(--bg)]/80 to-transparent z-10 lg:block hidden"></div>
-          <div className="absolute inset-0 bg-[var(--bg)]/70 z-10 lg:hidden block"></div>
+          <div className="absolute inset-0 bg-[var(--bg)]/85 sm:bg-[var(--bg)]/70 z-10 lg:hidden block"></div>
           <img src={heroImg} alt="Library Interior" className="w-full h-full object-cover object-center" />
         </div>
 
@@ -215,9 +216,9 @@ export default function PublicLibrary() {
               <span className="text-sm font-bold tracking-widest uppercase text-[var(--text-muted)]">Premium Study Environment</span>
             </div>
 
-            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1] text-[var(--text)]">
-              A Premium Space For <br />
-              Focused Learning & <br />
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1] sm:leading-[1.1] text-[var(--text)]">
+              A Premium Space For <br className="hidden sm:block" />
+              Focused Learning & <br className="hidden sm:block" />
               <span style={{ color: "var(--accent)" }}>Real Results.</span>
             </h1>
 
@@ -272,11 +273,11 @@ export default function PublicLibrary() {
             <div className="text-sm font-bold tracking-widest uppercase mb-3" style={{ color: "var(--accent)" }}>Our Facilities</div>
             <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--text)] leading-tight mb-6">Everything You Need To Stay Productive</h2>
           </div>
-          <div className="lg:w-2/3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="lg:w-2/3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
             {gridFacilities.map((fac, i) => (
-              <div key={i} className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-6 flex flex-col items-center justify-center text-center gap-4 hover:border-[var(--accent)] transition-colors shadow-sm cursor-default">
+              <div key={i} className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 hover:border-[var(--accent)] transition-colors shadow-sm cursor-default">
                 <div style={{ color: "var(--accent)" }}>{fac.icon}</div>
-                <span className="font-semibold text-sm text-[var(--text)]">{fac.title}</span>
+                <span className="font-semibold text-xs sm:text-sm text-[var(--text)]">{fac.title}</span>
               </div>
             ))}
           </div>
@@ -290,14 +291,14 @@ export default function PublicLibrary() {
             <div className="text-sm font-bold tracking-widest uppercase mb-2" style={{ color: "var(--accent)" }}>Why Choose Us?</div>
             <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">Built For Focus.<br />Designed For Success.</h2>
           </div>
-          <div className="lg:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="lg:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { icon: <Users size={32} />, num: "500+", label: "Active Students" },
               { icon: <Clock size={32} />, num: "24/7", label: "Access" },
               { icon: <Wifi size={32} />, num: "100 Mbps", label: "High-Speed WiFi" },
               { icon: <Star size={32} />, num: "95%", label: "Student Satisfaction" }
             ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center lg:items-start text-center lg:text-left gap-3">
+              <div key={i} className="flex flex-col items-center lg:items-start text-center lg:text-left gap-2 sm:gap-3">
                 <div style={{ color: "var(--accent)" }}>{stat.icon}</div>
                 <div className="text-3xl font-extrabold text-white">{stat.num}</div>
                 <div className="text-sm font-medium text-gray-400">{stat.label}</div>
@@ -309,17 +310,21 @@ export default function PublicLibrary() {
 
       {/* GALLERY */}
       <section id="gallery" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-end mb-10 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
           <div>
             <div className="text-sm font-bold tracking-widest uppercase mb-2" style={{ color: "var(--accent)" }}>Gallery</div>
             <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text)]">A Glimpse Of Our Space</h2>
           </div>
-          <button className="px-6 py-2.5 rounded-md font-bold text-sm border-2 transition-all hover:bg-[var(--accent)] hover:text-[var(--accent-text)] hover:border-[var(--accent)]" style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>
-            View Full Gallery
+          <button 
+            onClick={() => setShowFullGallery(!showFullGallery)}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-md font-bold text-sm border-2 transition-all hover:bg-[var(--accent)] hover:text-[var(--accent-text)] hover:border-[var(--accent)]" 
+            style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+          >
+            {showFullGallery ? "Show Less" : "View Full Gallery"}
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {galleryImgs.slice(0, 4).map((img, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {(showFullGallery ? galleryImgs : galleryImgs.slice(0, 6)).map((img, i) => (
             <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group relative" onClick={() => setLightboxImg(img)}>
               <img src={img} alt="Gallery" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -420,17 +425,17 @@ export default function PublicLibrary() {
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text)]">What Our Students Say</h2>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-center text-[var(--text)] shadow-sm shrink-0 hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)] transition-colors">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button className="hidden sm:flex w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] items-center justify-center text-[var(--text)] shadow-sm shrink-0 hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)] transition-colors">
             <ChevronLeft size={20} />
           </button>
-          <div className="flex overflow-hidden gap-6 flex-1 px-2 pb-4">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-6 flex-1 px-2 pb-4 hide-scrollbar">
             {[
               { name: "Rohit Sharma", role: "UPSC Aspirant", text: "The environment here is perfect for serious preparation. Helps me stay focused for long hours.", rating: 5, img: "https://i.pravatar.cc/150?img=11" },
               { name: "Priya Mehta", role: "Student", text: "Great facilities, peaceful atmosphere, and amazing community of learners.", rating: 5, img: "https://i.pravatar.cc/150?img=5" },
               { name: "Aman Verma", role: "Professional", text: "The best place to work and study. Love the 24/7 access and premium cabins.", rating: 5, img: "https://i.pravatar.cc/150?img=12" }
             ].map((test, i) => (
-              <div key={i} className="flex-1 min-w-[300px] bg-[var(--card)] p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
+              <div key={i} className="flex-1 min-w-[280px] sm:min-w-[300px] snap-center bg-[var(--card)] p-6 sm:p-8 rounded-2xl border border-[var(--card-border)] shadow-sm">
                 <div className="flex items-center gap-4 mb-6">
                   <img src={test.img} alt={test.name} className="w-12 h-12 rounded-full object-cover" />
                   <div>
@@ -445,7 +450,7 @@ export default function PublicLibrary() {
               </div>
             ))}
           </div>
-          <button className="w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-center text-[var(--text)] shadow-sm shrink-0 hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)] transition-colors">
+          <button className="hidden sm:flex w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] items-center justify-center text-[var(--text)] shadow-sm shrink-0 hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)] transition-colors">
             <ChevronRight size={20} />
           </button>
         </div>

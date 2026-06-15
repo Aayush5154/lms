@@ -140,8 +140,24 @@ router.post("/library/gallery", requireAuth, uploadGallery.array("files", 6), as
       secure_url: f.path,
       public_id: f.filename
     }));
-    // Append to existing gallery
-    lib.gallery = [...(lib.gallery || []), ...uploadedImages].slice(0, 6);
+    
+    // Check if replacing
+    const replaceIndexStr = req.query.replaceIndex as string;
+    if (replaceIndexStr) {
+      const replaceIndex = parseInt(replaceIndexStr, 10);
+      if (replaceIndex >= 0 && replaceIndex < (lib.gallery?.length || 0)) {
+        const oldImage = lib.gallery[replaceIndex];
+        const { deleteFromCloudinary } = await import("../utils/cloudinary");
+        if (oldImage && oldImage.public_id) {
+           try { await deleteFromCloudinary(oldImage.public_id); } catch(e) {}
+        }
+        lib.gallery[replaceIndex] = uploadedImages[0];
+      }
+    } else {
+      // Append to existing gallery
+      lib.gallery = [...(lib.gallery || []), ...uploadedImages].slice(0, 6);
+    }
+    
     await lib.save();
     res.json(formatLibrary(lib));
   } catch (err: any) {

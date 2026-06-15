@@ -44,6 +44,8 @@ export default function Settings() {
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+  const galleryReplaceRef = useRef<HTMLInputElement>(null);
+  const [replaceIndex, setReplaceIndex] = useState<number | null>(null);
 
   // Populate form when config loads
   useEffect(() => {
@@ -151,7 +153,25 @@ export default function Settings() {
       refetch();
     } catch {
       toast.error("Failed to read image files");
+    } finally {
       setPhotoUploading(false);
+    }
+  };
+
+  const handleGalleryReplace = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || replaceIndex === null) return;
+    setPhotoUploading(true);
+    try {
+      await uploadFile(`gallery?replaceIndex=${replaceIndex}`, file, "files");
+      toast.success("Gallery photo replaced!");
+      refetch();
+    } catch {
+      toast.error("Failed to replace photo");
+    } finally {
+      setPhotoUploading(false);
+      setReplaceIndex(null);
+      if (galleryReplaceRef.current) galleryReplaceRef.current.value = '';
     }
   };
 
@@ -404,6 +424,7 @@ export default function Settings() {
               </Button>
             </div>
             <input ref={galleryRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryChange} />
+            <input ref={galleryReplaceRef} type="file" accept="image/*" className="hidden" onChange={handleGalleryReplace} />
 
             {galleryPreviews.length === 0 ? (
               <div
@@ -424,6 +445,13 @@ export default function Settings() {
                       title="Remove"
                     >
                       <X className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => { setReplaceIndex(i); galleryReplaceRef.current?.click(); }}
+                      className="absolute top-1 left-1 px-2 h-5 rounded-full bg-black/70 text-white text-[10px] font-semibold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600"
+                      title="Replace"
+                    >
+                      Replace
                     </button>
                   </div>
                 ))}

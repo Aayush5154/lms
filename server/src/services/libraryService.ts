@@ -95,11 +95,10 @@ export function formatLibrary(lib: any) {
     logo: lib.logo ?? null,
     coverImage: lib.coverImage ?? null,
     gallery: lib.gallery ?? [],
+    // Derived fields (computed from raw data)
     logoUrl: lib.logo?.secure_url || null,
-    logoPublicId: lib.logo?.public_id || null,
     coverImageUrl: lib.coverImage?.secure_url || null,
-    coverPublicId: lib.coverImage?.public_id || null,
-    galleryImages: lib.gallery && lib.gallery.length > 0 ? lib.gallery.map((g: any) => g.secure_url) : [],
+    galleryImages: lib.gallery?.length ? lib.gallery.map((g: any) => g.secure_url) : [],
     websiteEnabled: lib.websiteEnabled,
     websiteSlug: lib.websiteSlug ?? null,
     websiteTheme: lib.websiteTheme ?? "black-gold",

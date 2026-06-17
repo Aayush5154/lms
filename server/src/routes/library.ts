@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Library } from "../models/Library";
 import { requireAuth, type AuthRequest } from "../middleware/auth";
 import { processLibraryImages, formatLibrary } from "../services/libraryService";
-import { uploadLogo, uploadCover, uploadGallery } from "../utils/cloudinary";
+import { uploadLogo, uploadCover, uploadGallery, deleteFromCloudinary } from "../utils/cloudinary";
 import { logger } from "../utils/logger";
 
 const router = Router();
@@ -91,7 +91,6 @@ router.post("/library/logo", requireAuth, uploadLogo.single("file"), async (req:
     }
     const lib = await getOrCreate(req.adminId!);
     // Delete old logo
-    const { deleteFromCloudinary } = await import("../utils/cloudinary");
     if (lib.logo?.public_id) {
       await deleteFromCloudinary(lib.logo.public_id);
     }
@@ -113,7 +112,6 @@ router.post("/library/cover", requireAuth, uploadCover.single("file"), async (re
       return;
     }
     const lib = await getOrCreate(req.adminId!);
-    const { deleteFromCloudinary } = await import("../utils/cloudinary");
     if (lib.coverImage?.public_id) {
       await deleteFromCloudinary(lib.coverImage.public_id);
     }
@@ -147,7 +145,6 @@ router.post("/library/gallery", requireAuth, uploadGallery.array("files", 6), as
       const replaceIndex = parseInt(replaceIndexStr, 10);
       if (replaceIndex >= 0 && replaceIndex < (lib.gallery?.length || 0)) {
         const oldImage = lib.gallery[replaceIndex];
-        const { deleteFromCloudinary } = await import("../utils/cloudinary");
         if (oldImage && oldImage.public_id) {
            try { await deleteFromCloudinary(oldImage.public_id); } catch(e) {}
         }

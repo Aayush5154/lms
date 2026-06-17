@@ -10,6 +10,7 @@ import { Loader2, CreditCard, Printer, CheckCircle2, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { openReceiptPrint } from "@/utils/receiptTemplate";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -79,35 +80,17 @@ export function RecordPaymentDialog({ student, open, onClose }: Props) {
   };
 
   const handlePrint = () => {
-    const content = receiptRef.current;
-    if (!content) return;
-    const win = window.open("", "_blank", "width=600,height=700");
-    if (!win) return;
-    win.document.write(`
-      <html><head><title>Receipt - ${receipt?.receiptNumber}</title>
-      <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 24px; color: #111; }
-        .receipt { max-width: 520px; margin: auto; border: 2px solid #222; border-radius: 8px; padding: 28px; }
-        .header { text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 16px; margin-bottom: 16px; }
-        .header h1 { margin: 0; font-size: 22px; letter-spacing: 1px; }
-        .header p { margin: 4px 0; color: #555; font-size: 13px; }
-        .badge { display: inline-block; background: #16a34a; color: white; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: bold; margin-top: 8px; }
-        .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        .row .label { color: #666; }
-        .row .value { font-weight: 600; }
-        .amount-row { display: flex; justify-content: space-between; padding: 12px 0; margin-top: 8px; background: #f0fdf4; border-radius: 6px; padding: 10px 12px; }
-        .amount-row .label { color: #166534; font-weight: 700; font-size: 15px; }
-        .amount-row .value { color: #16a34a; font-weight: 800; font-size: 18px; }
-        .footer { text-align: center; margin-top: 20px; color: #888; font-size: 11px; border-top: 1px dashed #ccc; padding-top: 12px; }
-        @media print { body { padding: 0; } }
-      </style>
-      </head><body>
-      ${content.innerHTML}
-      </body></html>
-    `);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
+    if (!receipt) return;
+    openReceiptPrint({
+      receiptNumber: receipt.receiptNumber,
+      studentName: receipt.studentName,
+      seatNumber: receipt.seatNumber,
+      paymentDate: receipt.paymentDate,
+      month: receipt.month ?? 1,
+      year: receipt.year,
+      amount: receipt.amount,
+      notes: receipt.notes,
+    });
   };
 
   const yearOptions = [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1];

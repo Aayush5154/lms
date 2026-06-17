@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Printer, Receipt, IndianRupee } from "lucide-react";
 import { format } from "date-fns";
+import { openReceiptPrint } from "@/utils/receiptTemplate";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -30,45 +31,16 @@ export default function Payments() {
   const totalAmount = payments.reduce((sum, p) => sum + Number(p.amount), 0);
 
   const handlePrint = (payment: (typeof payments)[0]) => {
-    const monthName = MONTHS[(payment.month ?? 1) - 1];
-    const win = window.open("", "_blank", "width=600,height=700");
-    if (!win) return;
-    win.document.write(`
-      <html><head><title>Receipt - ${payment.receiptNumber}</title>
-      <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 24px; color: #111; }
-        .receipt { max-width: 520px; margin: auto; border: 2px solid #222; border-radius: 8px; padding: 28px; }
-        .header { text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 16px; margin-bottom: 16px; }
-        .header h1 { margin: 0; font-size: 22px; } .header p { color: #555; font-size: 13px; margin: 4px 0; }
-        .badge { background: #16a34a; color: white; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: bold; }
-        .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        .amount-row { display: flex; justify-content: space-between; margin-top: 8px; background: #f0fdf4; border-radius: 6px; padding: 10px 12px; }
-        .footer { text-align: center; margin-top: 20px; color: #888; font-size: 11px; border-top: 1px dashed #ccc; padding-top: 12px; }
-        @media print { body { padding: 0; } }
-      </style></head><body>
-      <div class="receipt">
-        <div class="header">
-          <h1>📚 PAYMENT RECEIPT</h1>
-          <p>Library Management System</p>
-          <span class="badge">✓ PAID</span>
-        </div>
-        <div class="row"><span style="color:#666">Receipt No.</span><span style="font-weight:600;font-family:monospace">${payment.receiptNumber}</span></div>
-        <div class="row"><span style="color:#666">Student Name</span><span style="font-weight:600">${payment.studentName}</span></div>
-        <div class="row"><span style="color:#666">Seat Number</span><span style="font-weight:600">#${payment.seatNumber}</span></div>
-        <div class="row"><span style="color:#666">Payment Date</span><span style="font-weight:600">${format(new Date(payment.paymentDate), "dd MMM, yyyy")}</span></div>
-        <div class="row"><span style="color:#666">For Month</span><span style="font-weight:600">${monthName} ${payment.year}</span></div>
-        ${payment.notes ? `<div class="row"><span style="color:#666">Notes</span><span style="font-weight:600">${payment.notes}</span></div>` : ""}
-        <div class="amount-row">
-          <span style="color:#166534;font-weight:700;font-size:15px">Amount Paid</span>
-          <span style="color:#16a34a;font-weight:800;font-size:18px">₹${Number(payment.amount).toLocaleString()}</span>
-        </div>
-        <div class="footer">Thank you! This is a computer-generated receipt.</div>
-      </div>
-      </body></html>
-    `);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
+    openReceiptPrint({
+      receiptNumber: payment.receiptNumber,
+      studentName: payment.studentName,
+      seatNumber: payment.seatNumber,
+      paymentDate: payment.paymentDate,
+      month: payment.month ?? 1,
+      year: payment.year,
+      amount: payment.amount,
+      notes: payment.notes,
+    });
   };
 
   const yearOptions = [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1];

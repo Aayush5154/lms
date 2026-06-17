@@ -74,30 +74,30 @@
   --elevate-2: rgba(0,0,0, .09);
 
   /* ===== LIGHT THEME — Premium SaaS ===== */
-  --background: 210 20% 98%;          /* #F8FAFC */
+  --background: 0 0% 99%;             /* #FEFEFE */
   --foreground: 222 47% 11%;          /* #0F172A */
   --border: 215 25% 90%;              /* #E2E8F0 */
   --input: 215 25% 90%;
-  --ring: 239 84% 67%;                /* #4F46E5 */
+  --ring: 241 88% 65%;                /* #5856F3 */
 
   --card: 0 0% 100%;                  /* #FFFFFF */
   --card-foreground: 222 47% 11%;
   --card-border: 215 25% 90%;
 
-  --sidebar: 221 83% 53%;             /* #2563EB — blue gradient start */
+  --sidebar: 227 58% 35%;             /* #253D90 */
   --sidebar-foreground: 0 0% 100%;
-  --sidebar-border: 218 80% 45%;
+  --sidebar-border: 227 58% 30%;
   --sidebar-primary: 0 0% 100%;
-  --sidebar-primary-foreground: 221 83% 53%;
-  --sidebar-accent: 218 75% 40%;
+  --sidebar-primary-foreground: 241 88% 65%;
+  --sidebar-accent: 227 58% 40%;
   --sidebar-accent-foreground: 0 0% 100%;
-  --sidebar-ring: 218 80% 45%;
+  --sidebar-ring: 241 88% 65%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
   --popover-border: 215 25% 90%;
 
-  --primary: 239 84% 67%;             /* #4F46E5 — Indigo */
+  --primary: 241 88% 65%;             /* #5856F3 */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 220 14% 96%;           /* #F1F5F9 */
@@ -106,13 +106,13 @@
   --muted: 220 14% 96%;
   --muted-foreground: 215 16% 47%;
 
-  --accent: 239 84% 67%;
+  --accent: 241 88% 65%;
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 239 84% 67%;
+  --chart-1: 241 88% 65%;
   --chart-2: 142 71% 45%;
   --chart-3: 213 94% 48%;
   --chart-4: 38 92% 50%;
@@ -183,9 +183,9 @@
 
 /* ===== THEME-AWARE SIDEBAR ===== */
 
-/* ---- Light mode: blue gradient sidebar ---- */
+/* ---- Light mode: solid blue sidebar ---- */
 :not(.dark) [data-slot="sidebar-inner"] {
-  background: linear-gradient(180deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%) !important;
+  background: hsl(var(--sidebar)) !important;
 }
 
 /* ---- Dark mode: solid dark sidebar (no gradient) ---- */
@@ -204,7 +204,7 @@
 }
 :not(.dark) [data-sidebar="menu-button"][data-active="true"] {
   background: #ffffff !important;
-  color: #2563EB !important;
+  color: #5856F3 !important;
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -261,69 +261,128 @@
 
 
 
+/* ===== GLOBAL ANIMATIONS & MICRO-INTERACTIONS ===== */
+
+/* Page entrance animation — both themes */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: fadeSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Staggered card entrance — use inline style={{ animationDelay }} for flexibility */
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card-enter {
+  animation: cardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Unified card hover lift — both themes */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -6px rgba(0, 0, 0, 0.04);
+}
+.dark .hover-lift:hover {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3), 0 4px 10px -6px rgba(0, 0, 0, 0.2);
+}
+
 /* Smooth transitions for interactive elements */
-.light-transition,
-:not(.dark) .transition-colors {
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Button press effect */
+.btn-press {
   transition: all 0.15s ease;
 }
+.btn-press:active {
+  transform: scale(0.97);
+}
 
-/* Premium card shadows in light mode */
-:not(.dark) [class*="rounded-xl"][class*="border"] {
+/* Premium card shadows */
+:not(.dark) .card-shadow {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
 }
-
-/* Light-mode table row hover */
-:not(.dark) tr[class*="hover"]:hover {
-  background-color: hsl(220 14% 97%) !important;
+:not(.dark) .card-shadow-hover:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 4px 10px -6px rgba(0, 0, 0, 0.04);
+}
+.dark .card-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+}
+.dark .card-shadow-hover:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
 }
 
-/* Light-mode scrollbar styling */
-:not(.dark) ::-webkit-scrollbar {
+/* Table row hover — both themes */
+.table-row-hover {
+  transition: background-color 0.15s ease;
+}
+.table-row-hover:hover {
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-:not(.dark) ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
-:not(.dark) ::-webkit-scrollbar-thumb {
-  background: hsl(215 25% 85%);
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
   border-radius: 999px;
 }
-:not(.dark) ::-webkit-scrollbar-thumb:hover {
-  background: hsl(215 25% 75%);
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
 
 /* Focus ring consistency */
-:not(.dark) :focus-visible {
+:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
-/* Smooth page transitions */
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Pulse animation for live badge */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.live-pulse {
+  animation: livePulse 2s ease-in-out infinite;
 }
 
-:not(.dark) .page-enter {
-  animation: fadeSlideIn 0.3s ease-out;
+
+
+/* Badge hover effects */
+.badge-hover {
+  transition: all 0.15s ease;
+}
+.badge-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Chart tooltip styling */
+.recharts-tooltip-wrapper {
+  transition: opacity 0.15s ease !important;
 }
 
 /* ===== LOGIN PAGE — Theme-aware hero ===== */
 .login-hero {
-  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%);
+  background: linear-gradient(135deg, #253D90 0%, #5856F3 100%);
 }
 .dark .login-hero {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #1f1f1f 100%);
 }
 .login-hero-badge {
-  background: linear-gradient(135deg, #1E3A8A, #2563EB);
+  background: linear-gradient(135deg, #253D90, #5856F3);
 }
 .dark .login-hero-badge {
   background: linear-gradient(135deg, #f59e0b, #d97706);

@@ -9,6 +9,7 @@ import { ArrowLeft, CreditCard, Printer } from "lucide-react";
 import { Link } from "wouter";
 import { format } from "date-fns";
 import { RecordPaymentDialog } from "@/components/RecordPaymentDialog";
+import { openReceiptPrint } from "@/utils/receiptTemplate";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
@@ -25,43 +26,16 @@ export default function StudentProfile() {
 
   const handlePrintReceipt = (payment: typeof payments extends Array<infer T> | undefined ? T : never) => {
     if (!payment) return;
-    const win = window.open("", "_blank", "width=600,height=700");
-    if (!win) return;
-    win.document.write(`
-      <html><head><title>Receipt - ${payment.receiptNumber}</title>
-      <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 24px; color: #111; }
-        .receipt { max-width: 520px; margin: auto; border: 2px solid #222; border-radius: 8px; padding: 28px; }
-        .header { text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 16px; margin-bottom: 16px; }
-        .header h1 { margin: 0; font-size: 22px; } .header p { color: #555; font-size: 13px; }
-        .badge { background: #16a34a; color: white; padding: 4px 14px; border-radius: 999px; font-size: 12px; font-weight: bold; }
-        .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        .amount-row { display: flex; justify-content: space-between; margin-top: 8px; background: #f0fdf4; border-radius: 6px; padding: 10px 12px; }
-        .footer { text-align: center; margin-top: 20px; color: #888; font-size: 11px; border-top: 1px dashed #ccc; padding-top: 12px; }
-        @media print { body { padding: 0; } }
-      </style></head><body>
-      <div class="receipt">
-        <div class="header">
-          <h1>📚 PAYMENT RECEIPT</h1>
-          <p>Library Management System</p>
-          <span class="badge">✓ PAID</span>
-        </div>
-        <div class="row"><span style="color:#666">Receipt No.</span><span style="font-weight:600;font-family:monospace">${payment.receiptNumber}</span></div>
-        <div class="row"><span style="color:#666">Student Name</span><span style="font-weight:600">${payment.studentName}</span></div>
-        <div class="row"><span style="color:#666">Seat Number</span><span style="font-weight:600">#${payment.seatNumber}</span></div>
-        <div class="row"><span style="color:#666">Payment Date</span><span style="font-weight:600">${format(new Date(payment.paymentDate), "dd MMM, yyyy")}</span></div>
-        <div class="row"><span style="color:#666">For Month</span><span style="font-weight:600">${MONTHS[(payment.month ?? 1) - 1]} ${payment.year}</span></div>
-        ${payment.notes ? `<div class="row"><span style="color:#666">Notes</span><span style="font-weight:600">${payment.notes}</span></div>` : ""}
-        <div class="amount-row">
-          <span style="color:#166534;font-weight:700;font-size:15px">Amount Paid</span>
-          <span style="color:#16a34a;font-weight:800;font-size:18px">₹${Number(payment.amount).toLocaleString()}</span>
-        </div>
-        <div class="footer">Thank you! This is a computer-generated receipt.</div>
-      </div>
-      </body></html>
-    `);
-    win.document.close(); win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
+    openReceiptPrint({
+      receiptNumber: payment.receiptNumber,
+      studentName: payment.studentName,
+      seatNumber: payment.seatNumber,
+      paymentDate: payment.paymentDate,
+      month: payment.month,
+      year: payment.year,
+      amount: payment.amount,
+      notes: payment.notes,
+    });
   };
 
   return (
@@ -72,13 +46,13 @@ export default function StudentProfile() {
         </Button>
         <h1 className="text-2xl font-bold tracking-tight">Student Profile</h1>
         <div className="flex-1" />
-        <Button className="bg-emerald-600 hover:bg-emerald-700 shadow-sm" onClick={() => setShowPayment(true)}>
+        <Button className="bg-emerald-600 hover:bg-emerald-700 shadow-sm btn-press" onClick={() => setShowPayment(true)}>
           <CreditCard className="w-4 h-4 mr-2" /> Record Payment
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1">
+        <Card className="md:col-span-1 card-shadow card-enter card-enter-delay-1">
           <CardContent className="p-6 flex flex-col items-center text-center">
             <div className="w-24 h-24 rounded-full bg-indigo-50 mb-4 overflow-hidden border-4 border-background shadow-md">
                {student.photoUrl ? (
@@ -105,7 +79,7 @@ export default function StudentProfile() {
           </CardContent>
         </Card>
 
-        <Card className="md:col-span-2">
+        <Card className="md:col-span-2 card-shadow card-enter card-enter-delay-2">
           <CardHeader><CardTitle className="text-base">Details</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-4 text-sm">
             <div><p className="text-muted-foreground">Father's Name</p><p className="font-medium">{student.fatherName}</p></div>
@@ -130,7 +104,7 @@ export default function StudentProfile() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="card-shadow card-enter card-enter-delay-3">
         <CardHeader><CardTitle className="text-base">Payment History</CardTitle></CardHeader>
         <CardContent>
           {paymentsLoading ? <Skeleton className="h-40 w-full" /> : (
@@ -143,7 +117,7 @@ export default function StudentProfile() {
                 </div>
               ) : (
                 payments.map(payment => (
-                  <div key={payment.id} className="flex justify-between items-center p-3 border border-border/60 rounded-xl hover:bg-muted/30 transition-colors">
+                  <div key={payment.id} className="flex justify-between items-center p-3 border border-border/60 rounded-xl table-row-hover">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
                         <CreditCard className="w-4 h-4 text-emerald-600" />
@@ -157,8 +131,7 @@ export default function StudentProfile() {
                       <div>
                         <p className="text-sm font-medium">{MONTHS[(payment.month ?? 1) - 1]} {payment.year}</p>
                         <p className="text-xs text-muted-foreground">{format(new Date(payment.paymentDate), "dd MMM, yyyy")}</p>
-                      </div>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                      </div>                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110"
                         title="Print receipt" onClick={() => handlePrintReceipt(payment)}>
                         <Printer className="w-3.5 h-3.5" />
                       </Button>

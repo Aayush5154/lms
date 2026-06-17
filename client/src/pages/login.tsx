@@ -39,6 +39,7 @@ export default function Login() {
     <div className="min-h-[100dvh] flex bg-background">
       <div className="flex-1 hidden lg:flex items-center justify-center p-12 relative overflow-hidden login-hero">
         <div className="absolute inset-0 opacity-[0.07] bg-[url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-yellow-400/[0.12] dark:bg-yellow-400/[0.08]" />
         <div className="relative z-10 max-w-lg">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm border border-white/10">

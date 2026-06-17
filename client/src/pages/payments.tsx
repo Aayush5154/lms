@@ -40,14 +40,14 @@ export default function Payments() {
           <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">History of all fee transactions</p>
         </div>
         {payments.length > 0 && (
-          <Badge variant="secondary" className="text-sm px-4 py-1.5 font-semibold bg-emerald-50 text-emerald-700 border-emerald-200">
+          <Badge variant="secondary" className="text-sm px-4 py-1.5 font-semibold bg-emerald-50 text-emerald-700 border-emerald-200 badge-hover card-enter card-enter-delay-1">
             <IndianRupee className="w-3.5 h-3.5 mr-1" />
             {totalAmount.toLocaleString()} collected
           </Badge>
         )}
       </div>
 
-      <Card>
+      <Card className="card-shadow card-enter card-enter-delay-2">
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <CardTitle className="text-base">All Transactions</CardTitle>
@@ -93,7 +93,7 @@ export default function Payments() {
                 </TableHeader>
                 <TableBody>
                   {payments.map(payment => (
-                    <TableRow key={payment.id} className="hover:bg-muted/30 transition-colors">
+                    <TableRow key={payment.id} className="table-row-hover">
                       <TableCell>
                         <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">{payment.receiptNumber}</span>
                       </TableCell>
@@ -111,7 +111,7 @@ export default function Payments() {
                         {format(new Date(payment.paymentDate), "dd MMM, yyyy")}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110"
                           title="Print receipt" onClick={() => handlePrint(payment)}>
                           <Printer className="w-4 h-4" />
                         </Button>

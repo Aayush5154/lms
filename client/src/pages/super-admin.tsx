@@ -94,18 +94,18 @@ export default function SuperAdmin() {
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">Manage all libraries on the platform</p>
         </div>
-        <Button onClick={() => setShowCreate(true)} className="shadow-sm">
+        <Button onClick={() => setShowCreate(true)} className="shadow-sm btn-press">
           <Plus className="w-4 h-4 mr-2" /> Create Library
         </Button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard icon={<Building2 className="w-5 h-5 text-indigo-600" />} label="Total Libraries" value={admins.length} bg="bg-indigo-50" />
-        <StatCard icon={<CheckCircle className="w-5 h-5 text-emerald-600" />} label="Active" value={admins.filter((a: any) => a.isActive).length} bg="bg-emerald-50" />
-        <StatCard icon={<XCircle className="w-5 h-5 text-red-500" />} label="Suspended" value={admins.filter((a: any) => !a.isActive).length} bg="bg-red-50" />
+        <StatCard icon={<Building2 className="w-5 h-5 text-indigo-600" />} label="Total Libraries" value={admins.length} bg="bg-indigo-50" delay={0} />
+        <StatCard icon={<CheckCircle className="w-5 h-5 text-emerald-600" />} label="Active" value={admins.filter((a: any) => a.isActive).length} bg="bg-emerald-50" delay={1} />
+        <StatCard icon={<XCircle className="w-5 h-5 text-red-500" />} label="Suspended" value={admins.filter((a: any) => !a.isActive).length} bg="bg-red-50" delay={2} />
       </div>
 
-      <Card>
+      <Card className="card-shadow card-enter card-enter-delay-3">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base"><Users className="w-4 h-4 text-indigo-600" /> All Libraries</CardTitle>
           <CardDescription>Manage library admin accounts</CardDescription>
@@ -127,7 +127,7 @@ export default function SuperAdmin() {
                 </TableHeader>
                 <TableBody>
                   {admins.map((admin: any) => (
-                    <TableRow key={admin._id ?? admin.id} className="hover:bg-muted/30 transition-colors">
+                    <TableRow key={admin._id ?? admin.id} className="table-row-hover">
                       <TableCell>
                         <p className="font-medium text-sm">{admin.library?.libraryName ?? admin.libraryName}</p>
                         <p className="text-xs text-muted-foreground">{admin.name}</p>
@@ -150,18 +150,18 @@ export default function SuperAdmin() {
                                 onClick={() => suspendMutation.mutate(admin._id ?? admin.id)} disabled={suspendMutation.isPending}>
                                 <XCircle className="w-3 h-3 mr-1" /> Suspend
                               </Button>}
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-indigo-500"
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-indigo-500 transition-all duration-150 hover:scale-110"
                             onClick={() => { setResetTarget({ id: admin._id ?? admin.id, name: admin.name }); setNewPwd(""); }}>
                             <KeyRound className="w-3.5 h-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-purple-500"
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-purple-500 transition-all duration-150 hover:scale-110"
                             onClick={() => {
                               setEditConfigTarget({ id: admin._id ?? admin.id, name: admin.name });
                               setConfigForm({ theme: admin.library?.theme || "light", websiteEnabled: admin.library?.websiteEnabled ?? true, websiteSlug: admin.library?.websiteSlug || "" });
                             }}>
                             <Settings className="w-3.5 h-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive transition-all duration-150 hover:scale-110"
                             onClick={() => { if (confirm(`Delete ${admin.name}?`)) deleteMutation.mutate(admin._id ?? admin.id); }}
                             disabled={deleteMutation.isPending}>
                             <Trash2 className="w-3.5 h-3.5" />
@@ -192,8 +192,8 @@ export default function SuperAdmin() {
             {field("totalSeats", "Total Seats", "number", "50")}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button onClick={() => createMutation.mutate({ ...form, totalSeats: Number(form.totalSeats) })} disabled={createMutation.isPending}>
+            <Button variant="outline" onClick={() => setShowCreate(false)} className="btn-press">Cancel</Button>
+            <Button onClick={() => createMutation.mutate({ ...form, totalSeats: Number(form.totalSeats) })} disabled={createMutation.isPending} className="btn-press">
               {createMutation.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Creating...</> : "Create Library"}
             </Button>
           </DialogFooter>
@@ -238,9 +238,9 @@ export default function SuperAdmin() {
   );
 }
 
-function StatCard({ icon, label, value, bg }: { icon: React.ReactNode; label: string; value: number; bg?: string }) {
+function StatCard({ icon, label, value, bg, delay = 0 }: { icon: React.ReactNode; label: string; value: number; bg?: string; delay?: number }) {
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
+    <Card className="hover-lift card-shadow card-enter" style={{ animationDelay: `${delay * 80}ms` }}>
       <CardContent className="flex items-center gap-4 pt-5">
         <div className={`p-2.5 rounded-xl ${bg || "bg-muted"}`}>{icon}</div>
         <div>

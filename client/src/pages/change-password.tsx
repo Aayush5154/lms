@@ -43,7 +43,7 @@ export default function ChangePassword() {
         <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">Update your admin credentials</p>
       </div>
 
-      <Card>
+      <Card className="card-shadow card-enter card-enter-delay-1">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <div className="p-1.5 rounded-lg bg-indigo-50"><KeyRound className="w-4 h-4 text-indigo-600" /></div>
@@ -64,7 +64,7 @@ export default function ChangePassword() {
               <label className="text-sm font-medium">Confirm New Password</label>
               <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
             </div>
-            <Button type="submit" className="w-full shadow-sm" disabled={isPending}>
+            <Button type="submit" className="w-full shadow-sm btn-press" disabled={isPending}>
               {isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Updating...</> : "Update Password"}
             </Button>
           </form>

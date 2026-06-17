@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGetOverdueStudents, useGetDuesToday, useMarkFeePaid } from "@workspace/api-client-react";
+import { useGetOverdueStudents, useGetDuesToday } from "@workspace/api-client-react";
 import type { Student } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, differenceInDays } from "date-fns";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Send, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { RecordPaymentDialog } from "@/components/RecordPaymentDialog";
 
@@ -142,30 +138,8 @@ export default function Fees() {
 
 function FeeTable({ students, isOverdue }: { students: Student[], isOverdue: boolean }) {
   const queryClient = useQueryClient();
-  const markPaid = useMarkFeePaid();
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [amount, setAmount] = useState("");
-  const [notes, setNotes] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [payingStudent, setPayingStudent] = useState<Student | null>(null);
   const [remindedIds, setRemindedIds] = useState<Set<string>>(new Set());
-
-  const handleMarkPaid = () => {
-    if (!selectedStudent || !amount) return;
-    const now = new Date();
-    markPaid.mutate({
-      data: { studentId: selectedStudent.id, amount: Number(amount), month: now.getMonth() + 1, year: now.getFullYear(), notes }
-    }, {
-      onSuccess: () => {
-        toast.success(`Payment recorded for ${selectedStudent.name}`);
-        setDialogOpen(false);
-        queryClient.invalidateQueries({ queryKey: ["/api/students"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/reports"] });
-      },
-      onError: () => toast.error("Failed to record payment")
-    });
-  };
 
   const handleRemind = (student: Student) => {
     if (openWhatsApp(student)) {
@@ -245,7 +219,7 @@ function FeeTable({ students, isOverdue }: { students: Student[], isOverdue: boo
                         {reminded ? "Sent ✓" : "Remind"}
                       </Button>
                       <Button size="sm" variant="outline" onClick={() => {
-                        setSelectedStudent(student); setAmount(String(student.monthlyFee)); setNotes(""); setDialogOpen(true);
+                        setPayingStudent(student);
                       }}>Mark Paid</Button>
                     </div>
                   </TableCell>
@@ -255,31 +229,6 @@ function FeeTable({ students, isOverdue }: { students: Student[], isOverdue: boo
           </TableBody>
         </Table>
       </div>
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Record Payment</DialogTitle>
-            <DialogDescription>Mark fees as paid for {selectedStudent?.name}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>Amount (₹)</Label>
-              <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label>Notes <span className="text-muted-foreground text-xs">(optional)</span></Label>
-              <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="e.g. Paid via UPI" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleMarkPaid} disabled={markPaid.isPending || !amount}>
-              {markPaid.isPending ? "Recording..." : "Confirm Payment"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {payingStudent && <RecordPaymentDialog student={payingStudent} open={!!payingStudent} onClose={() => setPayingStudent(null)} />}
     </>

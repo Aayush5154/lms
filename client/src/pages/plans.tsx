@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Trash2, Save, Check, X, Star, Tags } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
 
 export default function Plans() {
   const { data: config, isLoading, refetch } = useGetLibraryConfig();
@@ -62,25 +62,25 @@ export default function Plans() {
           <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">Manage your library's pricing tiers and included facilities.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" onClick={handleAddPlan}><Plus className="w-4 h-4 mr-2" /> Add Plan</Button>
-          <Button onClick={handleSave} disabled={updateConfig.isPending} className="shadow-sm">
+          <Button variant="outline" onClick={handleAddPlan} className="btn-press"><Plus className="w-4 h-4 mr-2" /> Add Plan</Button>
+          <Button onClick={handleSave} disabled={updateConfig.isPending} className="shadow-sm btn-press">
             <Save className="w-4 h-4 mr-2" /> {updateConfig.isPending ? "Saving..." : "Save Plans"}
           </Button>
         </div>
       </div>
 
       {plans.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center py-12 text-center bg-muted/10">
+        <Card className="flex flex-col items-center justify-center py-12 text-center bg-muted/10 card-shadow card-enter">
           <CardTitle className="mb-2 text-xl">No Plans Configured</CardTitle>
           <CardDescription className="mb-6">Add your first membership plan to display on the public website.</CardDescription>
-          <Button onClick={handleAddPlan}><Plus className="w-4 h-4 mr-2" /> Create First Plan</Button>
+          <Button onClick={handleAddPlan} className="btn-press"><Plus className="w-4 h-4 mr-2" /> Create First Plan</Button>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((plan, i) => (
-            <Card key={i} className={`relative flex flex-col ${plan.recommended ? 'border-primary/40 shadow-md shadow-primary/10' : ''}`}>
+            <Card key={i} className={`relative flex flex-col card-shadow hover-lift card-enter`} style={{ animationDelay: `${i * 80}ms` }}>
               {plan.recommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm badge-hover">
                   <Star className="w-3 h-3 fill-current" /> Recommended
                 </div>
               )}
@@ -90,7 +90,7 @@ export default function Plans() {
                     <Label className="text-xs text-muted-foreground">Plan Name</Label>
                     <Input value={plan.name} onChange={(e) => handlePlanChange(i, "name", e.target.value)} className="font-bold text-lg h-9" />
                   </div>
-                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 shrink-0" onClick={() => handleRemovePlan(i)}>
+                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 shrink-0 transition-all duration-150 hover:scale-110" onClick={() => handleRemovePlan(i)}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
@@ -104,14 +104,14 @@ export default function Plans() {
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Description</Label>
                   <textarea rows={2} value={plan.description} onChange={(e) => handlePlanChange(i, "description", e.target.value)}
-                    className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                    className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none transition-smooth"
                     placeholder="Short description..." />
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-semibold">Facilities Included</Label>
-                    <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={() => handleAddFeature(i)}>
+                    <Button variant="ghost" size="sm" className="h-6 text-xs px-2 btn-press" onClick={() => handleAddFeature(i)}>
                       <Plus className="w-3 h-3 mr-1" /> Add
                     </Button>
                   </div>
@@ -120,7 +120,7 @@ export default function Plans() {
                       <div key={j} className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-primary shrink-0" />
                         <Input value={feat} onChange={(e) => handleFeatureChange(i, j, e.target.value)} className="h-7 text-sm" />
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground shrink-0" onClick={() => handleRemoveFeature(i, j)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground shrink-0 transition-all duration-150 hover:scale-110" onClick={() => handleRemoveFeature(i, j)}>
                           <X className="w-3 h-3" />
                         </Button>
                       </div>

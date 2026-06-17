@@ -10,31 +10,18 @@ import { Link } from "wouter";
 import { format } from "date-fns";
 import { RecordPaymentDialog } from "@/components/RecordPaymentDialog";
 
-const MONTHS = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
-];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 export default function StudentProfile() {
   const [, params] = useRoute("/students/:id");
   const id = params?.id || "";
   const [showPayment, setShowPayment] = useState(false);
 
-  const { data: student, isLoading } = useGetStudent(id, {
-    query: { queryKey: getGetStudentQueryKey(id), enabled: !!id }
-  });
+  const { data: student, isLoading } = useGetStudent(id, { query: { queryKey: getGetStudentQueryKey(id), enabled: !!id } });
+  const { data: payments, isLoading: paymentsLoading } = useGetStudentPayments(id, { query: { queryKey: getGetStudentPaymentsQueryKey(id), enabled: !!id } });
 
-  const { data: payments, isLoading: paymentsLoading } = useGetStudentPayments(id, {
-    query: { queryKey: getGetStudentPaymentsQueryKey(id), enabled: !!id }
-  });
-
-  if (isLoading) {
-    return <div className="p-6"><Skeleton className="h-[400px] w-full" /></div>;
-  }
-
-  if (!student) {
-    return <div className="p-6">Student not found</div>;
-  }
+  if (isLoading) return <div className="p-6"><Skeleton className="h-[400px] w-full" /></div>;
+  if (!student) return <div className="p-6">Student not found</div>;
 
   const handlePrintReceipt = (payment: typeof payments extends Array<infer T> | undefined ? T : never) => {
     if (!payment) return;
@@ -73,23 +60,19 @@ export default function StudentProfile() {
       </div>
       </body></html>
     `);
-    win.document.close();
-    win.focus();
+    win.document.close(); win.focus();
     setTimeout(() => { win.print(); win.close(); }, 400);
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto page-enter">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/students"><ArrowLeft className="w-4 h-4" /></Link>
         </Button>
         <h1 className="text-2xl font-bold tracking-tight">Student Profile</h1>
         <div className="flex-1" />
-        <Button
-          className="bg-green-600 hover:bg-green-700"
-          onClick={() => setShowPayment(true)}
-        >
+        <Button className="bg-emerald-600 hover:bg-emerald-700 shadow-sm" onClick={() => setShowPayment(true)}>
           <CreditCard className="w-4 h-4 mr-2" /> Record Payment
         </Button>
       </div>
@@ -97,11 +80,11 @@ export default function StudentProfile() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-1">
           <CardContent className="p-6 flex flex-col items-center text-center">
-            <div className="w-24 h-24 rounded-full bg-muted mb-4 overflow-hidden border-4 border-background shadow-md">
+            <div className="w-24 h-24 rounded-full bg-indigo-50 mb-4 overflow-hidden border-4 border-background shadow-md">
                {student.photoUrl ? (
                  <img src={student.photoUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                ) : (
-                 <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-muted-foreground">
+                 <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-indigo-600">
                    {student.name.substring(0,2).toUpperCase()}
                  </div>
                )}
@@ -111,102 +94,62 @@ export default function StudentProfile() {
             <div className="mt-4 flex gap-2 flex-wrap justify-center">
               <Badge variant="secondary">Seat #{student.seatNumber}</Badge>
               {student.feeStatus === "paid"
-                ? <Badge className="bg-green-500 hover:bg-green-600">Paid</Badge>
+                ? <Badge className="bg-emerald-500 hover:bg-emerald-600">Paid</Badge>
                 : student.feeStatus === "overdue"
                 ? <Badge variant="destructive">Overdue</Badge>
-                : <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Unpaid</Badge>}
+                : <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">Unpaid</Badge>}
               {(student as any).shifts && (student as any).shifts.map((shift: string) => (
-                <Badge key={shift} className="bg-blue-100 text-blue-700 hover:bg-blue-100 capitalize">
-                  {shift}
-                </Badge>
+                <Badge key={shift} className="bg-indigo-50 text-indigo-600 hover:bg-indigo-50 capitalize">{shift}</Badge>
               ))}
             </div>
           </CardContent>
         </Card>
 
         <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>Details</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-base">Details</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Father's Name</p>
-              <p className="font-medium">{student.fatherName}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">WhatsApp</p>
-              <p className="font-medium">{student.whatsappNumber || "N/A"}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Joining Date</p>
-              <p className="font-medium">{format(new Date(student.joiningDate), "dd MMM, yyyy")}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Monthly Fee</p>
-              <p className="font-medium">₹{student.monthlyFee}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Fee Due Day</p>
-              <p className="font-medium">Day {student.feeDueDate} of every month</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Next Due Date</p>
-              <p className="font-medium">{student.nextDueDate ? format(new Date(student.nextDueDate), "dd MMM, yyyy") : "N/A"}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Status</p>
-              <p className="font-medium">{student.isActive ? "Active" : "Inactive"}</p>
-            </div>
+            <div><p className="text-muted-foreground">Father's Name</p><p className="font-medium">{student.fatherName}</p></div>
+            <div><p className="text-muted-foreground">WhatsApp</p><p className="font-medium">{student.whatsappNumber || "N/A"}</p></div>
+            <div><p className="text-muted-foreground">Joining Date</p><p className="font-medium">{format(new Date(student.joiningDate), "dd MMM, yyyy")}</p></div>
+            <div><p className="text-muted-foreground">Monthly Fee</p><p className="font-medium">₹{student.monthlyFee}</p></div>
+            <div><p className="text-muted-foreground">Fee Due Day</p><p className="font-medium">Day {student.feeDueDate} of every month</p></div>
+            <div><p className="text-muted-foreground">Next Due Date</p><p className="font-medium">{student.nextDueDate ? format(new Date(student.nextDueDate), "dd MMM, yyyy") : "N/A"}</p></div>
+            <div><p className="text-muted-foreground">Status</p><p className="font-medium">{student.isActive ? "Active" : "Inactive"}</p></div>
             <div className="col-span-2">
               <p className="text-muted-foreground">Shifts</p>
               {(student as any).shifts && (student as any).shifts.length > 0 ? (
                 <div className="flex gap-1 flex-wrap mt-1">
                   {(student as any).shifts.map((shift: string) => (
-                    <Badge key={shift} className="bg-blue-100 text-blue-700 hover:bg-blue-100 capitalize text-xs">
-                      {shift}
-                    </Badge>
+                    <Badge key={shift} className="bg-indigo-50 text-indigo-600 hover:bg-indigo-50 capitalize text-xs">{shift}</Badge>
                   ))}
                 </div>
-              ) : (
-                <p className="font-medium text-muted-foreground">None assigned</p>
-              )}
+              ) : <p className="font-medium text-muted-foreground">None assigned</p>}
             </div>
-            {student.notes && (
-              <div className="col-span-2">
-                <p className="text-muted-foreground">Notes</p>
-                <p className="font-medium">{student.notes}</p>
-              </div>
-            )}
+            {student.notes && <div className="col-span-2"><p className="text-muted-foreground">Notes</p><p className="font-medium">{student.notes}</p></div>}
           </CardContent>
         </Card>
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Payment History</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-base">Payment History</CardTitle></CardHeader>
         <CardContent>
-          {paymentsLoading ? (
-            <Skeleton className="h-40 w-full" />
-          ) : (
-            <div className="space-y-3">
+          {paymentsLoading ? <Skeleton className="h-40 w-full" /> : (
+            <div className="space-y-2.5">
               {!payments || payments.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <CreditCard className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                  <p>No payments recorded yet</p>
-                  <Button variant="outline" className="mt-3" onClick={() => setShowPayment(true)}>
-                    Record First Payment
-                  </Button>
+                  <p className="text-sm">No payments recorded yet</p>
+                  <Button variant="outline" className="mt-3" onClick={() => setShowPayment(true)}>Record First Payment</Button>
                 </div>
               ) : (
                 payments.map(payment => (
-                  <div key={payment.id} className="flex justify-between items-center p-3 border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div key={payment.id} className="flex justify-between items-center p-3 border border-border/60 rounded-xl hover:bg-muted/30 transition-colors">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                        <CreditCard className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
+                        <CreditCard className="w-4 h-4 text-emerald-600" />
                       </div>
                       <div>
-                        <p className="font-semibold text-green-700">₹{Number(payment.amount).toLocaleString()}</p>
+                        <p className="font-semibold text-emerald-600">₹{Number(payment.amount).toLocaleString()}</p>
                         <p className="text-xs text-muted-foreground font-mono">{payment.receiptNumber}</p>
                       </div>
                     </div>
@@ -215,12 +158,8 @@ export default function StudentProfile() {
                         <p className="text-sm font-medium">{MONTHS[(payment.month ?? 1) - 1]} {payment.year}</p>
                         <p className="text-xs text-muted-foreground">{format(new Date(payment.paymentDate), "dd MMM, yyyy")}</p>
                       </div>
-                      <Button
-                        variant="ghost" size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                        title="Print receipt"
-                        onClick={() => handlePrintReceipt(payment)}
-                      >
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                        title="Print receipt" onClick={() => handlePrintReceipt(payment)}>
                         <Printer className="w-3.5 h-3.5" />
                       </Button>
                     </div>
@@ -232,13 +171,7 @@ export default function StudentProfile() {
         </CardContent>
       </Card>
 
-      {showPayment && (
-        <RecordPaymentDialog
-          student={student as any}
-          open={showPayment}
-          onClose={() => setShowPayment(false)}
-        />
-      )}
+      {showPayment && <RecordPaymentDialog student={student as any} open={showPayment} onClose={() => setShowPayment(false)} />}
     </div>
   );
 }

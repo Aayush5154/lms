@@ -73,58 +73,58 @@
   --elevate-1: rgba(0,0,0, .04);
   --elevate-2: rgba(0,0,0, .09);
 
-  /* Light Theme */
-  --background: 0 0% 100%; /* White */
-  --foreground: 222.2 84% 4.9%; /* Dark Text */
-  --border: 214.3 31.8% 91.4%; /* Light Border */
-  
-  --card: 0 0% 100%; /* White Cards */
-  --card-foreground: 222.2 84% 4.9%;
-  --card-border: 214.3 31.8% 91.4%;
-  
-  --sidebar: 0 0% 98%;
-  --sidebar-foreground: 240 5.3% 26.1%;
-  --sidebar-border: 240 5.9% 90%;
-  --sidebar-primary: 240 5.9% 10%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 240 4.8% 95.9%;
-  --sidebar-accent-foreground: 240 5.9% 10%;
-  --sidebar-ring: 217.2 91.2% 59.8%;
+  /* ===== LIGHT THEME — Premium SaaS ===== */
+  --background: 210 20% 98%;          /* #F8FAFC */
+  --foreground: 222 47% 11%;          /* #0F172A */
+  --border: 215 25% 90%;              /* #E2E8F0 */
+  --input: 215 25% 90%;
+  --ring: 239 84% 67%;                /* #4F46E5 */
+
+  --card: 0 0% 100%;                  /* #FFFFFF */
+  --card-foreground: 222 47% 11%;
+  --card-border: 215 25% 90%;
+
+  --sidebar: 221 83% 53%;             /* #2563EB — blue gradient start */
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-border: 218 80% 45%;
+  --sidebar-primary: 0 0% 100%;
+  --sidebar-primary-foreground: 221 83% 53%;
+  --sidebar-accent: 218 75% 40%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 218 80% 45%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --popover-border: 214.3 31.8% 91.4%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 215 25% 90%;
 
-  --primary: 221.2 83.2% 53.3%; /* Professional Blue */
-  --primary-foreground: 210 40% 98%;
-  
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  
-  --input: 214.3 31.8% 91.4%;
-  --ring: 221.2 83.2% 53.3%;
+  --primary: 239 84% 67%;             /* #4F46E5 — Indigo */
+  --primary-foreground: 0 0% 100%;
 
-  --chart-1: 221.2 83.2% 53.3%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
+  --secondary: 220 14% 96%;           /* #F1F5F9 */
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 220 14% 96%;
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 239 84% 67%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --chart-1: 239 84% 67%;
+  --chart-2: 142 71% 45%;
+  --chart-3: 213 94% 48%;
+  --chart-4: 38 92% 50%;
+  --chart-5: 25 95% 53%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
-  --app-font-mono: Menlo, monospace;
-  --radius: 0.5rem;
+  --app-font-mono: 'JetBrains Mono', Menlo, monospace;
+  --radius: 0.625rem;
 }
 
+/* ===== DARK THEME — Unchanged ===== */
 .dark {
   --background: 0 0% 4%;
   --foreground: 0 0% 100%;
@@ -179,4 +179,229 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+}
+
+/* ===== THEME-AWARE SIDEBAR ===== */
+
+/* ---- Light mode: blue gradient sidebar ---- */
+:not(.dark) [data-slot="sidebar-inner"] {
+  background: linear-gradient(180deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%) !important;
+}
+
+/* ---- Dark mode: solid dark sidebar (no gradient) ---- */
+.dark [data-slot="sidebar-inner"] {
+  background: hsl(var(--sidebar)) !important;
+}
+
+/* ---- Sidebar menu buttons — light mode ---- */
+:not(.dark) [data-sidebar="menu-button"] {
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.15s ease;
+}
+:not(.dark) [data-sidebar="menu-button"]:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+:not(.dark) [data-sidebar="menu-button"][data-active="true"] {
+  background: #ffffff !important;
+  color: #2563EB !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ---- Sidebar menu buttons — dark mode ---- */
+.dark [data-sidebar="menu-button"] {
+  color: hsl(var(--sidebar-foreground) / 0.7) !important;
+  transition: all 0.15s ease;
+}
+.dark [data-sidebar="menu-button"]:hover {
+  background: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
+}
+.dark [data-sidebar="menu-button"][data-active="true"] {
+  background: hsl(var(--sidebar-accent)) !important;
+  color: hsl(var(--sidebar-accent-foreground)) !important;
+  font-weight: 500;
+}
+
+/* ---- Sidebar group label — light mode ---- */
+:not(.dark) [data-sidebar="group-label"] {
+  color: rgba(255, 255, 255, 0.55) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* ---- Sidebar group label — dark mode ---- */
+.dark [data-sidebar="group-label"] {
+  color: hsl(var(--sidebar-foreground) / 0.5) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* ---- Sidebar header — transparent in both modes ---- */
+[data-sidebar="header"] {
+  background: transparent !important;
+}
+
+/* ---- Sidebar footer — light mode ---- */
+:not(.dark) [data-sidebar="footer"] {
+  background: rgba(0, 0, 0, 0.12) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ---- Sidebar footer — dark mode ---- */
+.dark [data-sidebar="footer"] {
+  background: hsl(var(--sidebar-accent) / 0.3) !important;
+  border-top: 1px solid hsl(var(--sidebar-border)) !important;
+}
+
+
+
+/* Smooth transitions for interactive elements */
+.light-transition,
+:not(.dark) .transition-colors {
+  transition: all 0.15s ease;
+}
+
+/* Premium card shadows in light mode */
+:not(.dark) [class*="rounded-xl"][class*="border"] {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+/* Light-mode table row hover */
+:not(.dark) tr[class*="hover"]:hover {
+  background-color: hsl(220 14% 97%) !important;
+}
+
+/* Light-mode scrollbar styling */
+:not(.dark) ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+:not(.dark) ::-webkit-scrollbar-track {
+  background: transparent;
+}
+:not(.dark) ::-webkit-scrollbar-thumb {
+  background: hsl(215 25% 85%);
+  border-radius: 999px;
+}
+:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 25% 75%);
+}
+
+/* Focus ring consistency */
+:not(.dark) :focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Smooth page transitions */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:not(.dark) .page-enter {
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+/* ===== LOGIN PAGE — Theme-aware hero ===== */
+.login-hero {
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%);
+}
+.dark .login-hero {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #1f1f1f 100%);
+}
+.login-hero-badge {
+  background: linear-gradient(135deg, #1E3A8A, #2563EB);
+}
+.dark .login-hero-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* ===== DARK MODE — Remap hardcoded light-only colors ===== */
+
+/* Indigo icon backgrounds → dark equivalents */
+.dark .bg-indigo-50 {
+  background-color: hsl(239 30% 15%) !important;
+}
+.dark .border-indigo-100 {
+  border-color: hsl(239 30% 20%) !important;
+}
+.dark .text-indigo-500,
+.dark .text-indigo-600 {
+  color: hsl(51 100% 50%) !important;
+}
+
+/* Emerald/green accent colors */
+.dark .bg-emerald-50 {
+  background-color: hsl(142 30% 12%) !important;
+}
+.dark .border-emerald-100,
+.dark .border-emerald-200 {
+  border-color: hsl(142 30% 20%) !important;
+}
+.dark .text-emerald-600,
+.dark .text-emerald-700 {
+  color: hsl(142 71% 55%) !important;
+}
+.dark .bg-emerald-500 {
+  background-color: hsl(142 71% 45%) !important;
+}
+
+/* Amber/yellow accent colors */
+.dark .bg-amber-50 {
+  background-color: hsl(38 30% 12%) !important;
+}
+.dark .border-amber-100,
+.dark .border-amber-200 {
+  border-color: hsl(38 30% 20%) !important;
+}
+.dark .text-amber-600,
+.dark .text-amber-700 {
+  color: hsl(38 92% 60%) !important;
+}
+
+/* Blue accent colors (shifts, etc.) */
+.dark .bg-blue-50 {
+  background-color: hsl(217 30% 15%) !important;
+}
+.dark .text-blue-600,
+.dark .text-blue-700 {
+  color: hsl(217 91% 60%) !important;
+}
+
+/* Slate stat card backgrounds */
+.dark .bg-slate-50 {
+  background-color: hsl(220 10% 14%) !important;
+}
+.dark .text-slate-500 {
+  color: hsl(220 10% 55%) !important;
+}
+
+/* Red accent colors */
+.dark .bg-red-50 {
+  background-color: hsl(0 30% 12%) !important;
+}
+.dark .border-red-100,
+.dark .border-red-200 {
+  border-color: hsl(0 30% 20%) !important;
+}
+
+/* Violet accent colors */
+.dark .bg-violet-50 {
+  background-color: hsl(270 30% 15%) !important;
+}
+.dark .text-violet-600 {
+  color: hsl(270 76% 65%) !important;
 }

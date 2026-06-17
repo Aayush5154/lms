@@ -14,18 +14,9 @@ export default function ChangePassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentPassword || !newPassword) {
-      toast.error("Both passwords are required");
-      return;
-    }
-    if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
+    if (!currentPassword || !newPassword) { toast.error("Both passwords are required"); return; }
+    if (newPassword.length < 6) { toast.error("New password must be at least 6 characters"); return; }
+    if (newPassword !== confirmPassword) { toast.error("Passwords do not match"); return; }
 
     setIsPending(true);
     try {
@@ -38,62 +29,42 @@ export default function ChangePassword() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to change password");
       toast.success("Password changed successfully");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setIsPending(false);
-    }
+      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+    } catch (err: any) { toast.error(err.message); } finally { setIsPending(false); }
   };
 
   return (
-    <div className="space-y-6 max-w-md mx-auto">
+    <div className="space-y-6 max-w-md mx-auto page-enter">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Change Password</h1>
-        <p className="text-muted-foreground">Update your admin credentials</p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+          <div className="p-2 rounded-xl bg-indigo-50"><KeyRound className="w-5 h-5 text-indigo-600" /></div>
+          Change Password
+        </h1>
+        <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">Update your admin credentials</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <KeyRound className="w-5 h-5" /> Security
+          <CardTitle className="flex items-center gap-2 text-base">
+            <div className="p-1.5 rounded-lg bg-indigo-50"><KeyRound className="w-4 h-4 text-indigo-600" /></div>
+            Security
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div className="space-y-1.5">
               <label className="text-sm font-medium">Current Password</label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                className="mt-1"
-                value={currentPassword}
-                onChange={e => setCurrentPassword(e.target.value)}
-              />
+              <Input type="password" placeholder="••••••••" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <label className="text-sm font-medium">New Password</label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                className="mt-1"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-              />
+              <Input type="password" placeholder="••••••••" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <label className="text-sm font-medium">Confirm New Password</label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                className="mt-1"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-              />
+              <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
             </div>
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button type="submit" className="w-full shadow-sm" disabled={isPending}>
               {isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Updating...</> : "Update Password"}
             </Button>
           </form>

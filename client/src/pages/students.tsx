@@ -78,32 +78,21 @@ export default function Students() {
     if (!validate()) return;
     createMutation.mutate({
       data: {
-        name: form.name.trim(),
-        phone: form.phone.trim(),
-        fatherName: form.fatherName.trim(),
-        seatNumber: Number(form.seatNumber),
-        joiningDate: form.joiningDate,
-        monthlyFee: Number(form.monthlyFee),
-        feeDueDate: Number(form.feeDueDate) || 1,
-        feeStatus: form.feeStatus,
-        shifts: form.shifts.length > 0 ? form.shifts : undefined,
-        notes: form.notes || undefined,
-        whatsappNumber: form.whatsappNumber || undefined,
+        name: form.name.trim(), phone: form.phone.trim(), fatherName: form.fatherName.trim(),
+        seatNumber: Number(form.seatNumber), joiningDate: form.joiningDate,
+        monthlyFee: Number(form.monthlyFee), feeDueDate: Number(form.feeDueDate) || 1,
+        feeStatus: form.feeStatus, shifts: form.shifts.length > 0 ? form.shifts : undefined,
+        notes: form.notes || undefined, whatsappNumber: form.whatsappNumber || undefined,
       } as any,
     }, {
       onSuccess: () => {
         toast.success("Student added successfully!");
-        setShowAdd(false);
-        setForm(defaultForm);
-        setFormErrors({});
+        setShowAdd(false); setForm(defaultForm); setFormErrors({});
         queryClient.invalidateQueries({ queryKey: ["/api/students"] });
         queryClient.invalidateQueries({ queryKey: ["/api/seats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
       },
-      onError: (err: any) => {
-        const msg = err?.response?.data?.error ?? "Failed to add student";
-        toast.error(msg);
-      },
+      onError: (err: any) => { toast.error(err?.response?.data?.error ?? "Failed to add student"); },
     });
   };
 
@@ -121,28 +110,29 @@ export default function Students() {
   };
 
   const field = (key: keyof StudentForm, label: string, type = "text", placeholder = "") => (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <Label htmlFor={key} className="text-sm font-medium">{label}</Label>
       <Input
         id={key} type={type} placeholder={placeholder}
         value={form[key]}
         onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setFormErrors(fe => ({ ...fe, [key]: "" })); }}
-        className={formErrors[key] ? "border-destructive" : ""}
+        className={formErrors[key] ? "border-destructive focus-visible:ring-destructive" : ""}
       />
       {formErrors[key] && <p className="text-xs text-destructive">{formErrors[key]}</p>}
     </div>
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto page-enter">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Users className="w-7 h-7 text-primary" /> Students
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <div className="p-2 rounded-xl bg-indigo-50"><Users className="w-5 h-5 text-indigo-600" /></div>
+            Students
           </h1>
-          <p className="text-muted-foreground">Manage library members and their details</p>
+          <p className="text-sm text-muted-foreground mt-0.5 ml-[52px]">Manage library members and their details</p>
         </div>
-        <Button onClick={() => setShowAdd(true)}>
+        <Button onClick={() => setShowAdd(true)} className="shadow-sm">
           <UserPlus className="w-4 h-4 mr-2" /> Add Student
         </Button>
       </div>
@@ -174,10 +164,10 @@ export default function Students() {
               {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-14 w-full" />)}
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-lg border border-border/60 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>Student</TableHead>
                     <TableHead>Seat</TableHead>
                     <TableHead>Phone</TableHead>
@@ -189,21 +179,21 @@ export default function Students() {
                 </TableHeader>
                 <TableBody>
                   {filtered.map(student => (
-                    <TableRow key={student.id} className="hover:bg-muted/40">
+                    <TableRow key={student.id} className="hover:bg-muted/30 transition-colors">
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-primary/20 shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center overflow-hidden border border-indigo-100 shrink-0">
                             {student.photoUrl
                               ? <img src={student.photoUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-                              : <span className="text-xs font-bold text-primary">{student.name.substring(0, 2).toUpperCase()}</span>}
+                              : <span className="text-xs font-bold text-indigo-600">{student.name.substring(0, 2).toUpperCase()}</span>}
                           </div>
-                          <div>
-                            <p className="font-medium text-sm">{student.name}</p>
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm truncate">{student.name}</p>
                             <p className="text-xs text-muted-foreground">{(student as any).fatherName}</p>
                             {(student as any).shifts && (student as any).shifts.length > 0 && (
                               <div className="flex gap-1 mt-1 flex-wrap">
                                 {(student as any).shifts.map((shift: string) => (
-                                  <span key={shift} className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium capitalize">
+                                  <span key={shift} className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium capitalize">
                                     {shift}
                                   </span>
                                 ))}
@@ -212,15 +202,15 @@ export default function Students() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell><span className="font-mono font-semibold text-sm bg-muted px-2 py-0.5 rounded">#{student.seatNumber}</span></TableCell>
+                      <TableCell><span className="font-mono font-semibold text-xs bg-muted px-2 py-0.5 rounded">#{student.seatNumber}</span></TableCell>
                       <TableCell className="text-sm">{student.phone}</TableCell>
                       <TableCell className="text-sm font-medium">₹{Number(student.monthlyFee).toLocaleString()}</TableCell>
                       <TableCell>
                         {student.feeStatus === "paid"
-                          ? <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">Paid</Badge>
+                          ? <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">Paid</Badge>
                           : student.feeStatus === "overdue"
                           ? <Badge variant="destructive">Overdue</Badge>
-                          : <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 border-yellow-200">Unpaid</Badge>}
+                          : <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">Unpaid</Badge>}
                       </TableCell>
                       <TableCell className="text-sm">
                         {student.nextDueDate ? format(new Date(student.nextDueDate), "dd MMM yyyy") : "—"}
@@ -229,7 +219,7 @@ export default function Students() {
                         <div className="flex items-center justify-end gap-1">
                           <Button
                             variant="ghost" size="icon"
-                            className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                            className="h-8 w-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
                             title="Record Payment"
                             onClick={() => setPayingStudent(student)}
                           >
@@ -267,7 +257,8 @@ export default function Students() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-primary" /> Add New Student
+              <div className="p-1.5 rounded-lg bg-indigo-50"><UserPlus className="w-4 h-4 text-indigo-600" /></div>
+              Add New Student
             </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
@@ -278,7 +269,7 @@ export default function Students() {
             {field("seatNumber", "Seat Number *", "number", "e.g. 1")}
             {field("joiningDate", "Joining Date *", "date")}
             {field("monthlyFee", "Monthly Fee (₹) *", "number", "e.g. 800")}
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <Label className="text-sm font-medium">Fee Due Date *</Label>
               <Select value={form.feeDueDate} onValueChange={v => setForm(f => ({ ...f, feeDueDate: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -289,7 +280,7 @@ export default function Students() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <Label className="text-sm font-medium">Initial Fee Status</Label>
               <Select value={form.feeStatus} onValueChange={v => setForm(f => ({ ...f, feeStatus: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -299,20 +290,17 @@ export default function Students() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1 sm:col-span-2">
+            <div className="space-y-1.5 sm:col-span-2">
               <Label className="text-sm font-medium">Shifts</Label>
-              <div className="flex flex-wrap gap-3 p-3 border rounded-md bg-muted/30">
+              <div className="flex flex-wrap gap-3 p-3 border rounded-lg bg-muted/20">
                 {["morning", "day", "full", "night"].map(shift => (
                   <label key={shift} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={form.shifts.includes(shift)}
                       onChange={e => {
-                        if (e.target.checked) {
-                          setForm(f => ({ ...f, shifts: [...f.shifts, shift] }));
-                        } else {
-                          setForm(f => ({ ...f, shifts: f.shifts.filter(s => s !== shift) }));
-                        }
+                        if (e.target.checked) { setForm(f => ({ ...f, shifts: [...f.shifts, shift] })); }
+                        else { setForm(f => ({ ...f, shifts: f.shifts.filter(s => s !== shift) })); }
                       }}
                       className="w-4 h-4 rounded border-gray-300"
                     />
@@ -321,7 +309,7 @@ export default function Students() {
                 ))}
               </div>
             </div>
-            <div className="space-y-1 sm:col-span-2">
+            <div className="space-y-1.5 sm:col-span-2">
               <Label htmlFor="notes" className="text-sm font-medium">Notes</Label>
               <Input id="notes" placeholder="Optional notes..." value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} />
@@ -338,13 +326,8 @@ export default function Students() {
         </DialogContent>
       </Dialog>
 
-      {/* Record Payment Dialog */}
       {payingStudent && (
-        <RecordPaymentDialog
-          student={payingStudent}
-          open={!!payingStudent}
-          onClose={() => setPayingStudent(null)}
-        />
+        <RecordPaymentDialog student={payingStudent} open={!!payingStudent} onClose={() => setPayingStudent(null)} />
       )}
     </div>
   );

@@ -36,8 +36,13 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="h-16 flex items-center justify-center px-4 border-b">
-        <h1 className="font-bold text-xl text-primary text-center">{admin?.libraryName || "Library OS"}</h1>
+      <SidebarHeader className="h-16 flex items-center justify-center px-4 border-b border-white/10">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <Grid className="w-4 h-4 text-white" />
+          </div>
+          <h1 className="font-bold text-lg text-white tracking-tight">{admin?.libraryName || "Library OS"}</h1>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -48,8 +53,8 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild isActive={location === item.href}>
                     <Link href={item.href}>
-                      <item.icon className="w-4 h-4 mr-2" />
-                      <span>{item.name}</span>
+                      <item.icon className="w-4 h-4 mr-2.5" />
+                      <span className="font-medium">{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -58,13 +63,16 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">{admin?.name}</span>
-            <span className="text-xs text-muted-foreground">{admin?.email}</span>
+      <SidebarFooter className="p-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-bold shrink-0">
+            {admin?.name?.substring(0, 2).toUpperCase() || "A"}
           </div>
-          <button onClick={logout} className="p-2 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white truncate">{admin?.name}</p>
+            <p className="text-xs text-white/60 truncate">{admin?.email}</p>
+          </div>
+          <button onClick={logout} className="p-2 hover:bg-white/15 rounded-lg text-white/70 hover:text-white transition-all" title="Logout">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

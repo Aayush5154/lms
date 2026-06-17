@@ -68,12 +68,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen w-full bg-background text-foreground">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-16 flex items-center justify-between px-6 border-b bg-card sticky top-0 z-10 shadow-sm">
+          <header className="h-16 flex items-center justify-between px-6 border-b border-border/60 bg-card/80 backdrop-blur-sm sticky top-0 z-10">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
-              <h2 className="font-bold text-lg text-primary">{t("Dashboard")}</h2>
+              <div>
+                <h2 className="font-bold text-lg text-foreground">{t("Dashboard")}</h2>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
               <LanguageToggle />
               <ThemeToggle />
             </div>

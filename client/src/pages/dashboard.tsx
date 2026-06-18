@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useLocation } from "wouter";
 import { useGetDashboardStats, useGetRevenueAnalytics, useGetOccupancyAnalytics, useGetRecentPayments, useGetDuesToday } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Grid, ArrowUpRight, ArrowDownRight, IndianRupee, Receipt, UserPlus, FileText, ChevronDown, User } from "lucide-react";
@@ -26,6 +27,7 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 }
 
 export default function Dashboard() {
+  const [, setLocation] = useLocation();
   const { data: stats } = useGetDashboardStats();
   const { data: revenue, isLoading: revLoading } = useGetRevenueAnalytics();
   const { data: occupancy } = useGetOccupancyAnalytics();
@@ -125,10 +127,10 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <QuickAction icon={<UserPlus className="w-6 h-6 text-amber-500" />} label="Add Student" bg="bg-amber-50 dark:bg-amber-500/10" border="border-amber-100 dark:border-amber-500/20" />
-                <QuickAction icon={<IndianRupee className="w-6 h-6 text-emerald-500" />} label="Add Payment" bg="bg-emerald-50 dark:bg-emerald-500/10" border="border-emerald-100 dark:border-emerald-500/20" />
-                <QuickAction icon={<User className="w-6 h-6 text-indigo-500" />} label="Allocate Seat" bg="bg-indigo-50 dark:bg-indigo-500/10" border="border-indigo-100 dark:border-indigo-500/20" />
-                <QuickAction icon={<FileText className="w-6 h-6 text-blue-500" />} label="Generate Report" bg="bg-blue-50 dark:bg-blue-500/10" border="border-blue-100 dark:border-blue-500/20" />
+                <QuickAction onClick={() => setLocation('/students')} icon={<UserPlus className="w-6 h-6 text-amber-500" />} label="Add Student" bg="bg-amber-50 dark:bg-amber-500/10" border="border-amber-100 dark:border-amber-500/20" />
+                <QuickAction onClick={() => setLocation('/fees')} icon={<IndianRupee className="w-6 h-6 text-emerald-500" />} label="Add Payment" bg="bg-emerald-50 dark:bg-emerald-500/10" border="border-emerald-100 dark:border-emerald-500/20" />
+                <QuickAction onClick={() => setLocation('/seats')} icon={<User className="w-6 h-6 text-indigo-500" />} label="Allocate Seat" bg="bg-indigo-50 dark:bg-indigo-500/10" border="border-indigo-100 dark:border-indigo-500/20" />
+                <QuickAction onClick={() => setLocation('/reports')} icon={<FileText className="w-6 h-6 text-blue-500" />} label="Generate Report" bg="bg-blue-50 dark:bg-blue-500/10" border="border-blue-100 dark:border-blue-500/20" />
               </div>
             </CardContent>
           </Card>
@@ -137,7 +139,7 @@ export default function Dashboard() {
           <Card className="card-shadow card-enter card-enter-delay-4">
             <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <CardTitle className="text-base font-bold">Recent Payments Preview</CardTitle>
-              <Button variant="link" className="text-sm text-indigo-600 h-auto p-0 font-semibold">View All Payments</Button>
+              <Button variant="link" onClick={() => setLocation('/payments')} className="text-sm text-indigo-600 h-auto p-0 font-semibold">View All Payments</Button>
             </CardHeader>
             <CardContent>
               {payLoading ? <Skeleton className="h-[200px] w-full" /> : (
@@ -202,7 +204,7 @@ export default function Dashboard() {
           <Card className="card-shadow card-enter card-enter-delay-4">
             <CardHeader className="pb-4 flex flex-row items-center justify-between">
               <CardTitle className="text-base font-bold">Recent Activities</CardTitle>
-              <Button variant="link" className="text-sm text-indigo-600 h-auto p-0 font-semibold">View All</Button>
+              <Button variant="link" onClick={() => setLocation('/payments')} className="text-sm text-indigo-600 h-auto p-0 font-semibold">View All</Button>
             </CardHeader>
             <CardContent>
               {payLoading ? <Skeleton className="h-[200px] w-full" /> : (
@@ -275,9 +277,9 @@ function SummaryItem({ icon, label, value }: { icon: any, label: string, value: 
   );
 }
 
-function QuickAction({ icon, label, bg, border }: { icon: any, label: string, bg: string, border: string }) {
+function QuickAction({ icon, label, bg, border, onClick }: { icon: any, label: string, bg: string, border: string, onClick?: () => void }) {
   return (
-    <div className={`flex flex-col items-center justify-center p-4 rounded-xl border ${border} ${bg} cursor-pointer hover:shadow-md transition-all`}>
+    <div onClick={onClick} className={`flex flex-col items-center justify-center p-4 rounded-xl border ${border} ${bg} cursor-pointer hover:shadow-md transition-all`}>
       <div className="p-3 bg-background rounded-xl shadow-sm mb-3">
         {icon}
       </div>

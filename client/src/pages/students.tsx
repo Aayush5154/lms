@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useListStudents, useDeleteStudent, useCreateStudent } from "@workspace/api-client-react";
+import { useListStudents, useDeleteStudent, useCreateStudent, useUpdateStudent } from "@workspace/api-client-react";
 import type { Student } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,27 @@ export default function Students() {
   const { data, isLoading } = useListStudents({ search }, { query: { queryKey: ["students", search] } });
   const deleteMutation = useDeleteStudent();
   const createMutation = useCreateStudent();
+  const updateMutation = useUpdateStudent();
+
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+
+  const handleEditClick = (student: Student) => {
+    setEditingStudent(student);
+    setForm({
+      name: student.name,
+      phone: student.phone,
+      fatherName: student.fatherName,
+      seatNumber: String(student.seatNumber),
+      joiningDate: student.joiningDate ? student.joiningDate.split("T")[0] : new Date().toISOString().split("T")[0],
+      monthlyFee: String(student.monthlyFee),
+      feeDueDate: String(student.feeDueDate),
+      feeStatus: student.feeStatus,
+      shifts: student.shifts || [],
+      notes: student.notes || "",
+      whatsappNumber: student.whatsappNumber || "",
+    });
+    setFormErrors({});
+  };
 
   const students = data?.students ?? [];
   
@@ -88,24 +109,47 @@ export default function Students() {
 
   const handleSubmit = () => {
     if (!validate()) return;
-    createMutation.mutate({
-      data: {
-        name: form.name.trim(), phone: form.phone.trim(), fatherName: form.fatherName.trim(),
-        seatNumber: Number(form.seatNumber), joiningDate: form.joiningDate,
-        monthlyFee: Number(form.monthlyFee), feeDueDate: Number(form.feeDueDate) || 1,
-        feeStatus: form.feeStatus, shifts: form.shifts.length > 0 ? form.shifts : undefined,
-        notes: form.notes || undefined, whatsappNumber: form.whatsappNumber || undefined,
-      } as any,
-    }, {
-      onSuccess: () => {
-        toast.success("Student added successfully!");
-        setShowAdd(false); setForm(defaultForm); setFormErrors({});
-        queryClient.invalidateQueries({ queryKey: ["/api/students"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/seats"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
-      },
-      onError: (err: any) => { toast.error(err?.response?.data?.error ?? "Failed to add student"); },
-    });
+    const payload = {
+      name: form.name.trim(), phone: form.phone.trim(), fatherName: form.fatherName.trim(),
+      seatNumber: Number(form.seatNumber), joiningDate: form.joiningDate,
+      monthlyFee: Number(form.monthlyFee), feeDueDate: Number(form.feeDueDate) || 1,
+      feeStatus: form.feeStatus, shifts: form.shifts.length > 0 ? form.shifts : undefined,
+      notes: form.notes || undefined, whatsappNumber: form.whatsappNumber || undefined,
+    };
+
+    if (editingStudent) {
+      updateMutation.mutate({
+        id: editingStudent.id,
+        data: payload as any,
+      }, {
+        onSuccess: (updatedStudent) => {
+          toast.success("Student updated successfully!");
+          setEditingStudent(null); setForm(defaultForm); setFormErrors({});
+          if (selectedStudent?.id === editingStudent.id) {
+            setSelectedStudent(updatedStudent);
+          }
+          queryClient.invalidateQueries({ queryKey: ["students"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/seats"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+        },
+        onError: (err: any) => { toast.error(err?.response?.data?.error ?? "Failed to update student"); },
+      });
+    } else {
+      createMutation.mutate({
+        data: payload as any,
+      }, {
+        onSuccess: () => {
+          toast.success("Student added successfully!");
+          setShowAdd(false); setForm(defaultForm); setFormErrors({});
+          queryClient.invalidateQueries({ queryKey: ["students"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/seats"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/dashboard"] });
+        },
+        onError: (err: any) => { toast.error(err?.response?.data?.error ?? "Failed to add student"); },
+      });
+    }
   };
 
   const handleDelete = (id: string, name: string) => {
@@ -236,8 +280,8 @@ export default function Students() {
                               <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={(e) => { e.stopPropagation(); setSelectedStudent(student); }}>
                                 <Eye className="w-4 h-4" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" asChild onClick={(e) => e.stopPropagation()}>
-                                <Link href={`/students/${student.id}`}><Edit className="w-4 h-4" /></Link>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={(e) => { e.stopPropagation(); handleEditClick(student); }}>
+                                <Edit className="w-4 h-4" />
                               </Button>
                               <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                                 onClick={(e) => { e.stopPropagation(); handleDelete(student.id, student.name); }}
@@ -279,9 +323,16 @@ export default function Students() {
           <Card className="card-shadow card-enter card-enter-delay-2 h-full border-border sticky top-6">
             <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-border/50">
               <CardTitle className="text-base font-bold">Student Profile</CardTitle>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => setSelectedStudent(null)}>
-                <X className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                {selectedStudent && (
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => handleEditClick(selectedStudent)} title="Edit Student">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                )}
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => setSelectedStudent(null)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               {selectedStudent ? (
@@ -377,12 +428,42 @@ export default function Students() {
                       </div>
                     </TabsContent>
                     
-                    <TabsContent value="seat" className="p-6 m-0 text-center text-muted-foreground">
-                      Seat details view...
+                    <TabsContent value="seat" className="p-6 m-0 space-y-6">
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-foreground">Seat Assignment</h3>
+                        <div className="grid grid-cols-3 gap-y-3 gap-x-4 text-sm">
+                          <div className="text-muted-foreground">Seat Number</div>
+                          <div className="col-span-2 font-medium text-foreground">
+                            <Badge variant="outline" className="font-bold text-indigo-600 bg-indigo-50 border-indigo-200">
+                              #{selectedStudent.seatNumber}
+                            </Badge>
+                          </div>
+                          
+                          <div className="text-muted-foreground">Assigned Shifts</div>
+                          <div className="col-span-2 font-medium text-foreground">
+                            {selectedStudent.shifts && selectedStudent.shifts.length > 0 ? (
+                              <div className="flex gap-1.5 flex-wrap">
+                                {selectedStudent.shifts.map((shift: string) => (
+                                  <Badge key={shift} className="bg-muted text-muted-foreground hover:bg-muted capitalize text-xs shadow-none border-none">
+                                    {shift}
+                                  </Badge>
+                                ))}
+                              </div>
+                            ) : '—'}
+                          </div>
+                        </div>
+                      </div>
                     </TabsContent>
                     
-                    <TabsContent value="fee" className="p-6 m-0 text-center text-muted-foreground">
-                      Fee history view...
+                    <TabsContent value="fee" className="p-6 m-0 space-y-6">
+                      <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                        <CreditCard className="w-10 h-10 mb-3 opacity-20" />
+                        <p className="text-sm font-medium">Fee History</p>
+                        <p className="text-xs opacity-70 text-center mt-1">To view full payment history and print receipts, go to the detailed profile.</p>
+                        <Button variant="outline" size="sm" className="mt-4" asChild>
+                          <Link href={`/students/${selectedStudent.id}`}>View Full Profile</Link>
+                        </Button>
+                      </div>
                     </TabsContent>
                   </Tabs>
                 </div>
@@ -398,13 +479,15 @@ export default function Students() {
         </div>
       </div>
 
-      {/* Add Student Dialog */}
-      <Dialog open={showAdd} onOpenChange={open => { setShowAdd(open); if (!open) { setForm(defaultForm); setFormErrors({}); } }}>
+      {/* Add/Edit Student Dialog */}
+      <Dialog open={showAdd || !!editingStudent} onOpenChange={open => { if (!open) { setShowAdd(false); setEditingStudent(null); setForm(defaultForm); setFormErrors({}); } }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-indigo-50"><UserPlus className="w-4 h-4 text-indigo-600" /></div>
-              Add New Student
+              <div className="p-1.5 rounded-lg bg-indigo-50">
+                {editingStudent ? <Edit className="w-4 h-4 text-indigo-600" /> : <UserPlus className="w-4 h-4 text-indigo-600" />}
+              </div>
+              {editingStudent ? "Edit Student Details" : "Add New Student"}
             </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
@@ -462,11 +545,15 @@ export default function Students() {
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => { setShowAdd(false); setForm(defaultForm); setFormErrors({}); }} className="btn-press">
+            <Button variant="outline" onClick={() => { setShowAdd(false); setEditingStudent(null); setForm(defaultForm); setFormErrors({}); }} className="btn-press">
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={createMutation.isPending} className="btn-press bg-indigo-600 hover:bg-indigo-700 text-white">
-              {createMutation.isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Adding...</> : <><UserPlus className="w-4 h-4 mr-2" /> Add Student</>}
+            <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} className="btn-press bg-indigo-600 hover:bg-indigo-700 text-white">
+              {createMutation.isPending || updateMutation.isPending ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {editingStudent ? "Saving..." : "Adding..."}</>
+              ) : (
+                <>{editingStudent ? <Edit className="w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />} {editingStudent ? "Save Changes" : "Add Student"}</>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

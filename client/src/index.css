@@ -211,17 +211,19 @@
 
 /* ---- Sidebar menu buttons — dark mode ---- */
 .dark [data-sidebar="menu-button"] {
-  color: hsl(var(--sidebar-foreground) / 0.7) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
   transition: all 0.15s ease;
 }
 .dark [data-sidebar="menu-button"]:hover {
-  background: hsl(var(--sidebar-accent)) !important;
-  color: hsl(var(--sidebar-accent-foreground)) !important;
+  background: hsla(51, 100%, 50%, 0.06) !important;
+  color: hsl(var(--primary)) !important;
 }
 .dark [data-sidebar="menu-button"][data-active="true"] {
-  background: hsl(var(--sidebar-accent)) !important;
-  color: hsl(var(--sidebar-accent-foreground)) !important;
-  font-weight: 500;
+  background: hsla(51, 100%, 50%, 0.12) !important;
+  color: hsl(var(--primary)) !important;
+  font-weight: 600;
+  border-left: 3px solid hsl(var(--primary)) !important;
+  border-radius: 0 6px 6px 0 !important;
 }
 
 /* ---- Sidebar group label — light mode ---- */
@@ -235,7 +237,7 @@
 
 /* ---- Sidebar group label — dark mode ---- */
 .dark [data-sidebar="group-label"] {
-  color: hsl(var(--sidebar-foreground) / 0.5) !important;
+  color: hsla(51, 100%, 50%, 0.5) !important;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.65rem;
@@ -245,6 +247,19 @@
 /* ---- Sidebar header — transparent in both modes ---- */
 [data-sidebar="header"] {
   background: transparent !important;
+}
+
+/* ---- Sidebar header — dark mode branding accent ---- */
+.dark [data-sidebar="header"] .backdrop-blur-sm {
+  background: hsla(51, 100%, 50%, 0.12) !important;
+  border: 1px solid hsla(51, 100%, 50%, 0.25) !important;
+}
+.dark [data-sidebar="header"] svg {
+  color: hsl(var(--primary)) !important;
+}
+.dark [data-sidebar="header"] h1 {
+  color: hsl(var(--primary)) !important;
+  text-shadow: 0 0 10px hsla(51, 100%, 50%, 0.15);
 }
 
 /* ---- Sidebar footer — light mode ---- */
@@ -257,6 +272,11 @@
 .dark [data-sidebar="footer"] {
   background: hsl(var(--sidebar-accent) / 0.3) !important;
   border-top: 1px solid hsl(var(--sidebar-border)) !important;
+}
+.dark [data-sidebar="footer"] .rounded-full {
+  background: hsla(51, 100%, 50%, 0.12) !important;
+  color: hsl(var(--primary)) !important;
+  border: 1px solid hsla(51, 100%, 50%, 0.25) !important;
 }
 
 

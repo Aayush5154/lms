@@ -12,8 +12,41 @@ export async function seedDatabase(): Promise<void> {
     return;
   }
 
-  const existingSuperAdmin = await Admin.findOne({ role: "super_admin" });
-  if (!existingSuperAdmin) {
+  try {
+    // Check by email first to prevent E11000 duplicate key errors.
+    // This handles the case where an admin (any role) already has the
+    // email specified in the env vars.
+    const existingByEmail = await Admin.findOne({ email: superEmail });
+
+    if (existingByEmail) {
+      if (existingByEmail.role === "super_admin") {
+        // Only sync credentials if the email actually changed
+        if (existingByEmail.email !== superEmail) {
+          existingByEmail.email = superEmail;
+          existingByEmail.password = superPassword;
+          await existingByEmail.save();
+          logger.info({ email: superEmail }, "Super admin credentials synced from env");
+        } else {
+          logger.info({ email: superEmail }, "Admin already exists");
+        }
+      } else {
+        logger.info({ email: superEmail }, "Admin already exists");
+      }
+      return;
+    }
+
+    // No admin with the target email — check if there's a super admin
+    // with a different email that needs credential sync (email change)
+    const existingSuperAdmin = await Admin.findOne({ role: "super_admin" });
+    if (existingSuperAdmin) {
+      existingSuperAdmin.email = superEmail;
+      existingSuperAdmin.password = superPassword;
+      await existingSuperAdmin.save();
+      logger.info({ email: superEmail }, "Super admin credentials synced from env");
+      return;
+    }
+
+    // No admin with this email and no super admin at all — create one
     await Admin.create({
       email: superEmail,
       password: superPassword,
@@ -22,10 +55,13 @@ export async function seedDatabase(): Promise<void> {
       role: "super_admin",
     });
     logger.info({ email: superEmail }, "Super admin seeded");
-  } else if (existingSuperAdmin.email !== superEmail) {
-    existingSuperAdmin.email = superEmail;
-    existingSuperAdmin.password = superPassword;
-    await existingSuperAdmin.save();
-    logger.info({ email: superEmail }, "Super admin credentials synced from env");
+  } catch (err: any) {
+    // Safety net: handle E11000 gracefully in case of race conditions
+    if (err?.code === 11000) {
+      logger.warn({ email: superEmail }, "Duplicate key error during seed — admin already exists");
+      return;
+    }
+    // Re-throw unexpected errors (e.g. connection failures)
+    throw err;
   }
 }

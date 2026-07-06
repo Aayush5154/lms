@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-const LibrarySchema = new Schema({
+
+const LibrarySchema = new Schema(
+  {
     adminId: { type: Schema.Types.ObjectId, ref: "Admin", required: true, unique: true },
     libraryName: { type: String, required: true, default: "My Study Library" },
     totalSeats: { type: Number, required: true, default: 50 },
@@ -26,21 +28,24 @@ const LibrarySchema = new Schema({
     websiteEnabled: { type: Boolean, default: true },
     websiteSlug: { type: String, unique: true, sparse: true },
     websiteTheme: { type: String, default: "black-gold" },
-    // Cloudinary schemas
     logo: {
-        secure_url: { type: String },
-        public_id: { type: String }
+      secure_url: { type: String },
+      public_id: { type: String }
     },
     coverImage: {
-        secure_url: { type: String },
-        public_id: { type: String }
+      secure_url: { type: String },
+      public_id: { type: String }
     },
     gallery: {
-        type: [{
-                secure_url: { type: String },
-                public_id: { type: String }
-            }],
-        default: []
+      type: [{ secure_url: { type: String }, public_id: { type: String } }],
+      default: []
+    },
+    membershipPlans: {
+      type: [{ name: { type: String }, price: { type: String }, description: { type: String }, features: { type: [String] }, recommended: { type: Boolean, default: false } }],
+      default: []
     }
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
+
 export const Library = mongoose.models["Library"] || mongoose.model("Library", LibrarySchema);

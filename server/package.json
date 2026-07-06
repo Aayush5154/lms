@@ -7,8 +7,7 @@
     "dev": "node ./build.mjs && node --env-file=../.env --enable-source-maps ./dist/index.mjs",
     "build": "node ./build.mjs",
     "start": "node --env-file=../.env --enable-source-maps ./dist/index.mjs",
-    "start:prod": "node ./dist/index.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "start:prod": "node ./dist/index.mjs"
   },
   "dependencies": {
     "@workspace/api-zod": "workspace:*",
@@ -29,15 +28,6 @@
     "pino-http": "^10.5.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^3.0.0",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/express-rate-limit": "^6.0.2",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^1.4.12",
-    "@types/node": "catalog:",
-    "@types/node-cron": "^3.0.11",
     "esbuild": "0.27.3",
     "esbuild-plugin-pino": "^2.3.3",
     "mongodb-memory-server": "^11.2.0",

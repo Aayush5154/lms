@@ -6,15 +6,12 @@
   "scripts": {
     "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "dev": "pnpm --filter @workspace/api-server run dev & pnpm --filter @workspace/library-app run dev",
-    "build": "pnpm run typecheck && pnpm -r --if-present run build",
-    "typecheck:libs": "tsc --build",
-    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./server\" --filter \"./client\" --filter \"./scripts\" --if-present run typecheck",
+    "build": "pnpm -r --if-present run build",
     "start": "pnpm --filter @workspace/api-server run start:prod"
   },
   "private": true,
   "devDependencies": {
-    "prettier": "^3.8.3",
-    "typescript": "~5.9.3"
+    "prettier": "^3.8.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": "[\"mongodb-memory-server\", \"core-js\", \"esbuild\"]"

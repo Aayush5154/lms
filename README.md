@@ -75,3 +75,5 @@ pnpm --filter @workspace/library-app run build
 - Storage: Cloudinary
 
 Deployment instructions and checklists are in [docs/deployment-guide.md](docs/deployment-guide.md).
+
+Sample Login credentials = "admin@library.com" and password is admin123
